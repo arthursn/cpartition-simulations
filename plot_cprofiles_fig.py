@@ -112,7 +112,7 @@ if __name__ == '__main__':
     ax1.axhline(c0, ls=':', color='k', lw=1)
     ax1.axhline(WBs, ls=':', color='k', lw=1)
     p1.plot_profiles(t_set=[1, 10, 50], ax=ax1, func=lambda x: x2wp(x, y=y),
-                     mirror=True, xlim=(-1, 1), ylim=(-.02, 1.9), lw=1)
+                     mirror=True, xlim=(-1.16, 1.16), ylim=(-.02, 1.9), lw=1)
     add_label(ax1, 'a)', py=0)
     ax1.text(.98, .98, r"$\alpha'-\theta$" + ' ortho',
              ha='right', va='top', transform=ax1.transAxes)
@@ -122,7 +122,7 @@ if __name__ == '__main__':
     ax2.axhline(c0, ls=':', color='k', lw=1)
     ax2.axhline(WBs, ls=':', color='k', lw=1)
     p2.plot_profiles(t_set=[1, 10, 100], ax=ax2, func=lambda x: x2wp(x, y=y),
-                     mirror=True, xlim=(-1, 1), ylim=(-.05, 4.1), lw=1)
+                     mirror=True, xlim=(-1.16, 1.16), ylim=(-.05, 4.1), lw=1)
     add_label(ax2, 'b)', py=0)
     ax2.text(.98, .98, r"$\alpha'-\theta$" + ' para',
              ha='right', va='top', transform=ax2.transAxes)
@@ -132,7 +132,7 @@ if __name__ == '__main__':
     ax3.axhline(c0, ls=':', color='k', lw=1)
     ax3.axhline(WBs, ls=':', color='k', lw=1)
     p3.plot_profiles(t_set=[1, 10, 100], ax=ax3, func=lambda x: x2wp(x, y=y),
-                     mirror=True, xlim=(-1, 1), ylim=(-.02, 1.9), lw=1)
+                     mirror=True, xlim=(-1.16, 1.16), ylim=(-.02, 1.9), lw=1)
     add_label(ax3, 'c)', py=0)
     ax3.text(.98, .98, r"$\mu_C=$" + '23.2 kJ/mol' + r' ($c^\gamma_{int}$ = WBs)',
              ha='right', va='top', transform=ax3.transAxes)

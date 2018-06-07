@@ -27,10 +27,7 @@ tdata_bcc = 'thermo/FoFo/TCFE8/375-bcc.txt'
 # tdata_fcc = 'thermo/FoFo/TCFE0/375-FCC.TXT'
 # tdata_bcc = 'thermo/FoFo/TCFE0/375-BCC.TXT'
 
-pos_mart = -.5
-j, aus1_diss = -1, False
-
-mart = BCC(T_C=T_C, dt=dt, z=np.linspace(-1, -.66, 20), c0=c0,
+mart = BCC(T_C=T_C, dt=dt, z=np.linspace(-1.16, -.66, 20), c0=c0,
            n_time=n_time, tdata=tdata_bcc,
            type_D='carbides', cmax_bcc=5.4e-4, c_carbide=.25)
 aus1 = FCC(T_C=T_C, dt=dt, z=np.linspace(-.66, -.33, 100), c0=c0,
@@ -46,6 +43,9 @@ int1 = Interface(domain1=mart, domain2=aus1, type_int='fixed.fluxes')
 int2 = Interface(domain1=aus1, domain2=fer1, type_int='mobile.mmode')
 int3 = Interface(domain1=fer1, domain2=aus2, type_int='mobile.mmode')
 int4 = Interface(domain1=aus2, domain2=fer2, type_int='mobile.mmode')
+
+pos_mart = mart.z[-1]
+j, aus1_diss = -1, False
 
 # fixed composition set by CCEtheta in austenite at the interface
 muC = 8188.68
