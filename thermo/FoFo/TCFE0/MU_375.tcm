@@ -1,0 +1,54 @@
+go data
+
+def-sy fe c mn si cu
+
+rej ph *
+rest ph fcc bcc
+get
+go p-3
+
+c-s ph bcc
+sus,,,
+
+s-c n=1 p=101325 t=648
+s-c w(c)=7.56827e-03 w(mn)=2.05621e-03
+s-c w(si)=2.53942e-02 w(cu)=3.90681e-03
+
+c-e
+c-e
+c-e
+s-a-v 1 w(c) 0 10e-2 1e-3
+
+step ,,,
+ent-sy tab xmu
+x(*) mu(*);
+
+tab xmu file 375-FCC.TXT,,
+
+save RESULT.POLY3 YES,,,
+
+c-s ph fcc
+sus,,,
+c-s ph bcc
+ent,,,
+
+s-c w(c)=7.56827e-03
+c-e
+c-e
+c-e
+s-a-v 1 w(c) 0 1e-2 1e-4
+step ,,,
+tab xmu file 375-BCC.TXT,,
+
+c-s ph fcc bcc
+ent,,,
+
+save RESULT.POLY3 YES,,,
+
+s-c w(c)=7.56827e-03
+c-e
+c-e
+c-e
+
+set-int
+
