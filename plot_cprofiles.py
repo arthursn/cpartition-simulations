@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 if __name__ == '__main__':
@@ -24,18 +25,13 @@ if __name__ == '__main__':
             print(fname)
 
             cprofiles = CProfiles(fname)
-            ax = cprofiles.plot_colormap(mirror=True,
+            
+            ax = cprofiles.plot_profiles(each=10, mirror=True,
                                          func=lambda x: x2wp(x, y=y),
                                          vmin=0, vmax=1.8)
             ax.set_xlabel(u'Position (μm)')
-            ax.set_ylabel('Time (s)')
-            
-            # ax = cprofiles.plot_profiles(each=100, mirror=True,
-            #                              func=lambda x: x2wp(x, y=y),
-            #                              vmin=0, vmax=1.8)
-            # ax.set_xlabel(u'Position (μm)')
-            # ax.set_ylabel('Carbon content (wt.%)')
-            # ax.legend()
+            ax.set_ylabel('Carbon content (wt.%)')
+            ax.legend()
 
             ax.set_title(fname)
             

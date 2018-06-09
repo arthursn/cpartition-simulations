@@ -23,13 +23,13 @@ basename = os.path.basename(__file__).replace('.py', '')
 c0 = 3.34414e-02
 T_C = 375.
 
-dt = 5e-3
-total_time = 100
+dt = 5e-2
+total_time = 1000
 n_time = int(total_time/dt)
 t = (np.arange(n_time) + 1)*dt
 
-tdata_fcc = 'thermo/FoFo/TCFE8_Fe-C-Mn-Si/375-fcc.txt'
-tdata_bcc = 'thermo/FoFo/TCFE8_Fe-C-Mn-Si/375-bcc.txt'
+tdata_fcc = 'thermo/FoFo/TCFE8/375-fcc.txt'
+tdata_bcc = 'thermo/FoFo/TCFE8/375-bcc.txt'
 
 mart = BCC(T_C=T_C, dt=dt, z=np.linspace(-1.16, -.66, 20), c0=c0,
            n_time=n_time, tdata=tdata_bcc,
