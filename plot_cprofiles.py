@@ -30,8 +30,9 @@ if __name__ == '__main__':
              Si=5.02504411E-2, Fe=9.4414085022e-1)
 
     if len(sys.argv) > 1:
-        each, argv = lookup_option('-e', sys.argv, int)
         each, argv = lookup_option('--each', sys.argv, int)
+        if not each:
+            each, argv = lookup_option('-e', sys.argv, int)
         if not each:
             each = 100
         
