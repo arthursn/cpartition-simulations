@@ -2,14 +2,9 @@
 # -*- coding: utf-8 -*-
 
 if __name__ == '__main__':
+    import sys
     from matplotlib import rcParams
     import matplotlib.pyplot as plt
-
-    import sys
-    newdir = '/home/arthur/Dropbox/python'
-    if newdir not in sys.path:
-        sys.path.insert(1, newdir)
-
     from cpartition import x2wp, CProfiles
 
     rcParams.update({'font.family': 'sans-serif',

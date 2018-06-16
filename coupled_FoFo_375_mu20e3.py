@@ -3,20 +3,12 @@
 import numpy as np
 import time
 
-import sys
 import os
-sys.path.insert(1, '/home/arthur/Dropbox/python')
+import sys
 from cpartition import *
 
-new_dirs = ['C_profiles', 'C_avg',
-            'pos_extremities', 'C_extremities', 'final_austenite']
-for directory in new_dirs:
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-"""Coupled model for Fe-0.76C alloy"""
-
 basename = os.path.basename(__file__).replace('.py', '')
+
 # wc0 = 0.76e-2
 c0 = 3.34414e-02
 T_C = 375.

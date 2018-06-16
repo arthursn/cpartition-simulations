@@ -5,18 +5,7 @@ import time
 
 import os
 import sys
-newdir = '/home/arthur/Dropbox/python'
-if newdir not in sys.path:
-    sys.path.insert(1, newdir)
 from cpartition import *
-
-new_dirs = ['C_profiles', 'C_avg', 'pos_extremities',
-            'C_extremities', 'final_austenite']
-for directory in new_dirs:
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-"""Coupled model for Fe-0.76C alloy"""
 
 basename = os.path.basename(__file__).replace('.py', '')
 

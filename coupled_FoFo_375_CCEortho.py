@@ -3,11 +3,9 @@
 import numpy as np
 import time
 
-import sys
 import os
+import sys
 from cpartition import *
-
-"""Coupled model for Fe-0.76C alloy"""
 
 basename = os.path.basename(__file__).replace('.py', '')
 
