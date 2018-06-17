@@ -6,10 +6,6 @@ from matplotlib import rcParams
 import matplotlib.pyplot as plt
 
 import os
-import sys
-newdir = '/home/arthur/Dropbox/python'
-if newdir not in sys.path:
-    sys.path.insert(1, newdir)
 from cpartition import x2wp, label, CProfiles
 
 from plot_cavg import plot_cavg
