@@ -1,5 +1,5 @@
 mart_FoFo_CCE.log @ arthur-ltf
-2018-06-16T01:42:15
+2018-06-17T07:06:20
 
 c0 = 3.344140e-02 (approx 0.74 wt.%)
 T_C = 375.0 [oC]
@@ -2013,5 +2013,5 @@ intf: type_int = 1 (fixed.fluxes)
  1998: t=0.999, cavg*=0.978085, r_mart=1.63019, r_aust=5.05434
  1999: t=0.999, cavg*=0.978088, r_mart=1.63019, r_aust=5.05082
  2000: t=1.000, cavg*=0.978091, r_mart=1.63019, r_aust=5.04731
-Time elapsed: 3.95 s
+Time elapsed: 4.03 s
 

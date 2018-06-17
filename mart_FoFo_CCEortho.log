@@ -1,5 +1,5 @@
 mart_FoFo_CCEortho.log @ arthur-ltf
-2018-06-08T21:46:38
+2018-06-17T06:58:34
 
 c0 = 3.344140e-02 (approx 0.74 wt.%)
 T_C = 375.0 [oC]
@@ -213,5 +213,5 @@ intf: type_int = 1 (fixed.fluxes)
 19800: t=989.999, cavg*=0.996198, r_mart=19.9305, r_aust=0.122588
 19900: t=995.000, cavg*=0.996198, r_mart=19.9272, r_aust=0.1224
 20000: t=1000.000, cavg*=0.996198, r_mart=19.9238, r_aust=0.122213
-Time elapsed: 24.89 s
+Time elapsed: 25.59 s
 

@@ -1,5 +1,5 @@
 coupled_FoFo_375_CCEortho.log @ arthur-ltf
-2018-06-07T23:39:53
+2018-06-17T06:57:55
 
 c0 = 3.344140e-02 (approx 0.74 wt.%)
 T_C = 375.0 [oC]
@@ -2025,5 +2025,5 @@ int4: type_int = 3 (mobile.mmode)
 19980: t=99.900, cavg*=0.974137, r_mart=2.03413, r_aus1=0.5436, r_fer1=0, r_aus2=1.50813, r_fer2=0
 19990: t=99.950, cavg*=0.974133, r_mart=2.03404, r_aus1=0.544438, r_fer1=0, r_aus2=1.50815, r_fer2=0
 20000: t=100.000, cavg*=0.974129, r_mart=2.03395, r_aus1=0.545278, r_fer1=0, r_aus2=1.50817, r_fer2=0
-Time elapsed: 92.01 s
+Time elapsed: 93.14 s
 

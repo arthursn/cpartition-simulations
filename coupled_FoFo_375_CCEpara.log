@@ -1,5 +1,5 @@
 coupled_FoFo_375_CCEpara.log @ arthur-ltf
-2018-06-07T22:54:35
+2018-06-17T06:59:34
 
 c0 = 3.344140e-02 (approx 0.74 wt.%)
 T_C = 375.0 [oC]
@@ -2025,5 +2025,5 @@ int4: type_int = 3 (mobile.mmode)
 199800: t=99.900, cavg*=1.01644, r_mart=1.03468, r_aus1=0.030957, r_fer1=0, r_aus2=0.124557, r_fer2=0
 199900: t=99.950, cavg*=1.01644, r_mart=1.03468, r_aus1=0.0309491, r_fer1=0, r_aus2=0.124554, r_fer2=0
 200000: t=100.000, cavg*=1.01644, r_mart=1.03468, r_aus1=0.0309412, r_fer1=0, r_aus2=0.124551, r_fer2=0
-Time elapsed: 1119.82 s
+Time elapsed: 1085.11 s
 
