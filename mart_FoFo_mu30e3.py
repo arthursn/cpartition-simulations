@@ -22,7 +22,7 @@ tdata_bcc = 'thermo/FoFo/TCFE8/375-bcc.txt'
 
 mart = BCC(T_C=T_C, dt=dt, z=np.linspace(-1.16, -.66, 20), c0=c0,
            n_time=n_time, tdata=tdata_bcc,
-           type_D='carbides', cmax_bcc=5.4e-4, c_carbide=.25)
+           type_D='carbides', cmax_bcc=5.4e-4, c_carbide=.3)
 aust = FCC(T_C=T_C, dt=dt, z=np.linspace(-.66, 0, 100), c0=c0,
            n_time=n_time, tdata=tdata_fcc)
 
