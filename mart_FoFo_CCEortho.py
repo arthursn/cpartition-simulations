@@ -13,7 +13,7 @@ c0 = 3.34414e-02
 T_C = 375.
 
 dt = 5e-2
-total_time = 1000
+total_time = 10000
 n_time = int(total_time/dt)
 t = (np.arange(n_time) + 1)*dt
 
