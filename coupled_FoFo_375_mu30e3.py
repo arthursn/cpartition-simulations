@@ -110,7 +110,7 @@ for i in range(n_time):
 
                 aus1.z = np.linspace(z[0], z[-1], n)
                 aus1.c = interp1d(z, c)(aus1.z)
-                aus1.initialize_grid(reset=False)
+                aus1.initialize_grid()
 
                 int1 = Interface(domain1=mart, domain2=aus1,
                                  type_int='fixed.fluxes')

@@ -79,7 +79,7 @@ for i in range(n_time):
                     z, c = aus1.z, aus1.c
                     aus1.z = np.linspace(z[0], z[-1], n)
                     aus1.c = interp1d(z, c)(aus1.z)
-                    aus1.initialize_grid(reset=False)
+                    aus1.initialize_grid()
                     print('aus1', i+1, n)
 
                 J, = int1.flux('fcc')
@@ -105,7 +105,7 @@ for i in range(n_time):
 
                 fer1.z = np.linspace(z[0], z[-1], n)
                 fer1.c = interp1d(z, c)(fer1.z)
-                fer1.initialize_grid(reset=False)
+                fer1.initialize_grid()
 
                 mart.deactivate()
                 aus1.deactivate()
