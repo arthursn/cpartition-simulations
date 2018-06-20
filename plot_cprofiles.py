@@ -50,6 +50,7 @@ if __name__ == '__main__':
     import sys
     import os
     import numpy as np
+    from fnmatch import fnmatch
     from matplotlib import rcParams
     import matplotlib.pyplot as plt
     from cpartition import x2wp, CProfiles
@@ -69,7 +70,7 @@ if __name__ == '__main__':
         mirror, args = lookup_option('-m', args, None, [])
         if len(mirror) > 0:
             mirror = True
-        
+
         log = False
         log, args = lookup_option('-l', args, None, [])
         if len(log) > 0:
@@ -102,10 +103,17 @@ if __name__ == '__main__':
             try:
                 fig, ax = plt.subplots(figsize=(8, 5))
                 cprofiles = CProfiles(basename)
-                cprofiles.plot_cprofiles(ax=ax, slc=slice(tmin, tmax, each), 
-                                        sel=sel, tlist=tlist,
-                                        mirror=mirror, func=lambda x: x2wp(x, y=y),
-                                        vmin=0, vmax=1.8)
+                cprofiles.plot_cprofiles(ax=ax, slc=slice(tmin, tmax, each),
+                                         sel=sel, tlist=tlist,
+                                         mirror=mirror, func=lambda x: x2wp(x, y=y),
+                                         vmin=0, vmax=1.8)
+
+                if fnmatch(basename, 'coupled*'):
+                    cprofiles.plot_locus_interface([('aus1.sn', 'aus1.cin'),
+                                                    ('aus2.s0', 'aus2.ci0'),
+                                                    ('aus2.sn', 'aus2.cin')], 
+                                                    ax=ax, color='k', ls='--',
+                                                    func=lambda x: x2wp(x, y=y), label='')
             except:
                 raise
                 print('Failed to plot "{}"'.format(basename))
@@ -118,7 +126,7 @@ if __name__ == '__main__':
                 ax.set_ylim(*ylim)
                 if log:
                     ax.set_yscale('log')
-                ax.set_title(basename)
+                ax.set_title(cprofiles.basename)
 
             # plt.savefig('img/' + basename + '.png', dpi=150)
             # plt.close()

@@ -13,12 +13,12 @@ basename = os.path.basename(__file__).replace('.py', '')
 c0 = 3.34414e-02
 T_C = 375.
 
-dt = 5e-3
-total_time = 100
-n_time = int(total_time/dt)
-dt = total_time/n_time
-t = (np.arange(n_time) + 1)*dt
-each = 10
+control_itsteps = ControlIterationSteps([5e-5, 5e-4, 5e-3, 5e-2], [0, .2, 2, 20, 100])
+total_time = control_itsteps.total_time
+n_time = control_itsteps.ntime
+dt = control_itsteps.dt
+each = 200
+control_itsteps.print_summary()
 
 tdata_fcc = 'thermo/FoFo/TCFE8/375-fcc.txt'
 tdata_bcc = 'thermo/FoFo/TCFE8/375-bcc.txt'
@@ -62,7 +62,17 @@ log.set_interfaces([('int1', int1), ('int2', int2),
 log.set_conditions(c0, T_C, total_time, n_time)
 log.initialize(False)
 
-for i in range(n_time):
+for i in control_itsteps.itlist:
+    if i in control_itsteps.itstepi and i > 0:
+        control_itsteps.next_itstep()
+        dt = control_itsteps.dt
+
+        mart.dt = dt
+        aus1.dt = dt
+        fer1.dt = dt
+        aus2.dt = dt
+        fer2.dt = dt
+
     try:
         if not aus1_diss:
             # interface velocities at the mobile interfaces
@@ -134,7 +144,7 @@ for i in range(n_time):
         print('error', i+1, j)
         raise
 
-    log.print(i, each)
+    log.print(i, criteria=lambda i: (i+1) % each == 0)
 
 log.close()
 

@@ -16,10 +16,10 @@ if __name__ == '__main__':
              Si=5.02504411E-2, Fe=9.4414085022e-1)
 
     if len(sys.argv) > 1:
-        for fname in sys.argv[1:]:
-            print(fname)
+        for basename in sys.argv[1:]:
+            print(basename)
 
-            cprofiles = CProfiles(fname)
+            cprofiles = CProfiles(basename)
             ax = cprofiles.plot_colormap(mirror=True,
                                          func=lambda x: x2wp(x, y=y),
                                          vmin=0, vmax=1.8)
@@ -33,7 +33,7 @@ if __name__ == '__main__':
             # ax.set_ylabel('Carbon content (wt.%)')
             # ax.legend()
 
-            ax.set_title(fname)
+            ax.set_title(cprofiles.basename)
             
             # plt.savefig('img/' + fname.split('.')[0] + '.png', dpi=150)
             # plt.close()

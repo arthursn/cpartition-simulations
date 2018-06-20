@@ -13,13 +13,12 @@ basename = os.path.basename(__file__).replace('.py', '')
 c0 = 3.34414e-02
 T_C = 375.
 
-# dt = total_time/n_time
-dt = 5e-4
-total_time = 10
-n_time = int(total_time/dt)
-dt = total_time/n_time
-t = (np.arange(n_time) + 1)*dt
-each = 100
+control_itsteps = ControlIterationSteps([5e-5, 5e-4, 5e-3, 5e-2], [0, .1, 1, 10, 1000])
+total_time = control_itsteps.total_time
+n_time = control_itsteps.ntime
+dt = control_itsteps.dt
+each = 200
+control_itsteps.print_summary()
 
 tdata_fcc = 'thermo/FoFo/TCFE8/375-fcc.txt'
 tdata_bcc = 'thermo/FoFo/TCFE8/375-bcc.txt'
@@ -27,16 +26,16 @@ tdata_bcc = 'thermo/FoFo/TCFE8/375-bcc.txt'
 # tdata_bcc = 'thermo/FoFo/TCFE0/375-BCC.TXT'
 
 mart = BCC(T_C=T_C, dt=dt, z=np.linspace(-1.16, -.66, 50), c0=c0,
-           n_time=n_time, tdata=tdata_bcc,
+           tdata=tdata_bcc,
            type_D='carbides', cmax_bcc=5.4e-4, c_carbide=.25)
 aus1 = FCC(T_C=T_C, dt=dt, z=np.linspace(-.66, -.33, 100), c0=c0,
-           n_time=n_time, tdata=tdata_fcc)
+           tdata=tdata_fcc)
 fer1 = BCC(T_C=T_C, dt=dt, z=np.linspace(-.33, -.33, 10), c0=0.,
-           n_time=n_time, tdata=tdata_bcc, E=WBs(T_C))
+           tdata=tdata_bcc, E=WBs(T_C))
 aus2 = FCC(T_C=T_C, dt=dt, z=np.linspace(-.33, 0, 100), c0=c0,
-           n_time=n_time, tdata=tdata_fcc)
+           tdata=tdata_fcc)
 fer2 = BCC(T_C=T_C, dt=dt, z=np.linspace(0, 0, 10), c0=0.,
-           n_time=n_time, tdata=tdata_bcc, E=WBs(T_C))
+           tdata=tdata_bcc, E=WBs(T_C))
 
 int1 = Interface(domain1=mart, domain2=aus1, type_int='fixed.fluxes')
 int2 = Interface(domain1=aus1, domain2=fer1, type_int='mobile.mmode')
@@ -56,9 +55,18 @@ log.set_interfaces([('int1', int1), ('int2', int2),
 log.set_conditions(c0, T_C, total_time, n_time)
 log.initialize(False)
 
-for i in range(n_time):
-    try:
+for i in control_itsteps.itlist:
+    if i in control_itsteps.itstepi and i > 0:
+        control_itsteps.next_itstep()
+        dt = control_itsteps.dt
 
+        mart.dt = dt
+        aus1.dt = dt
+        fer1.dt = dt
+        aus2.dt = dt
+        fer2.dt = dt
+
+    try:
         if not fer1_diss:
             # interface velocities at the mobile interfaces
             int1.comp(poly_deg=2)
@@ -98,8 +106,10 @@ for i in range(n_time):
                 aus1.c = interp1d(z, c)(aus1.z)
                 aus1.initialize_grid()
 
-                int1 = Interface(domain1=mart, domain2=aus1, type_int='fixed.fluxes')
-                int2 = Interface(domain1=aus1, domain2=fer2, type_int='mobile.mmode')
+                int1 = Interface(domain1=mart, domain2=aus1,
+                                 type_int='fixed.fluxes')
+                int2 = Interface(domain1=aus1, domain2=fer2,
+                                 type_int='mobile.mmode')
 
                 fer1.deactivate()
                 aus2.deactivate()
@@ -126,7 +136,7 @@ for i in range(n_time):
         print(i+1, j)
         raise
 
-    log.print(i, each)
+    log.print(i, criteria=lambda i: (i+1) % each == 0)
 
 log.close()
 
