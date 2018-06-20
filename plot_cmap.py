@@ -26,7 +26,7 @@ if __name__ == '__main__':
             ax.set_xlabel(u'Position (μm)')
             ax.set_ylabel('Time (s)')
             
-            # ax = cprofiles.plot_profiles(each=100, mirror=True,
+            # ax = cprofiles.plot_cprofiles(each=100, mirror=True,
             #                              func=lambda x: x2wp(x, y=y),
             #                              vmin=0, vmax=1.8)
             # ax.set_xlabel(u'Position (μm)')

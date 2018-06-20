@@ -57,7 +57,7 @@ def plot_comparison(files, cols=(0,1), **kwargs):
         except:
             print('Unexpected error while plotting data. Check if "label" variable is ok.')
 
-def plot_profiles(basename, t_set, **kwargs):
+def plot_cprofiles(basename, t_set, **kwargs):
     only_fcc = kwargs.pop('only_fcc', False)
     mirror = kwargs.pop('mirror', False)
 
