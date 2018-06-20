@@ -17,7 +17,7 @@ dt = 5e-4
 total_time_1 = 1
 n_time = int(total_time_1/dt)
 t = (np.arange(n_time) + 1)*dt
-each = 100
+each = 10
 
 tdata_fcc = 'thermo/FoFo/TCFE8/375-fcc.txt'
 tdata_bcc = 'thermo/FoFo/TCFE8/375-bcc.txt'
@@ -54,10 +54,10 @@ log.close()
 
 ##############
 
-dt = 5e-2
+dt = 5e-3
 total_time_2 = 1000
 n_time = int((total_time_2 - total_time_1)/dt)
-each = 100
+each = 200
 
 z = np.linspace(mart.z[0], mart.z[-1], 10)
 c = interp1d(mart.z, mart.c)(z)
@@ -82,7 +82,7 @@ def new_crit(it, each):
     return (it - it1 + int(total_time_1/dt)) % each == 0
 
 for it2 in range(it1 + 1, it1 + n_time + 1):
-    intf.comp(poly_deg=2)
+    intf.comp(poly_deg=3)
     mart.FDM_implicit(bcn=(1., 0, 0, intf.ci_bcc))
     aust.FDM_implicit(bc0=(1., 0, 0, intf.ci_fcc))
 
