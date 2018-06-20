@@ -17,6 +17,7 @@ dt = 5e-3
 total_time = 100.
 n_time = int(total_time/dt)
 t = (np.arange(n_time) + 1)*dt
+each = 10
 
 tdata_fcc = 'thermo/FoFo/TCFE8/375-fcc.txt'
 tdata_bcc = 'thermo/FoFo/TCFE8/375-bcc.txt'
@@ -54,7 +55,7 @@ log.set_domains([('mart', mart), ('aus1', aus1),
 log.set_interfaces([('int1', int1), ('int2', int2),
                     ('int4', int4), ('int4', int4)])
 log.set_conditions(c0, T_C, total_time, n_time)
-log.initialize(each=10, flush=False)
+log.initialize(False)
 
 for i in range(n_time):
     # interface velocities at the mobile interfaces
@@ -76,13 +77,13 @@ for i in range(n_time):
     fer2.c[:] = int4.ci_bcc
 
     # update position of interfaces and interpolate compositions
-    mart.update_grid()
-    aus1.update_grid(vn=int2.v)
-    fer1.update_grid(v0=int2.v, vn=int3.v)
-    aus2.update_grid(v0=int3.v, vn=int4.v)
-    fer2.update_grid(v0=int4.v)
+    mart.update_grid(i)
+    aus1.update_grid(i, vn=int2.v)
+    fer1.update_grid(i, v0=int2.v, vn=int3.v)
+    aus2.update_grid(i, v0=int3.v, vn=int4.v)
+    fer2.update_grid(i, v0=int4.v)
 
-    log.print(i)
+    log.print(i, each)
 
 log.close()
 

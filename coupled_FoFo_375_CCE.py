@@ -19,6 +19,7 @@ total_time = 10
 n_time = int(total_time/dt)
 dt = total_time/n_time
 t = (np.arange(n_time) + 1)*dt
+each = 100
 
 tdata_fcc = 'thermo/FoFo/TCFE8/375-fcc.txt'
 tdata_bcc = 'thermo/FoFo/TCFE8/375-bcc.txt'
@@ -53,7 +54,7 @@ log.set_domains([('mart', mart), ('aus1', aus1),
 log.set_interfaces([('int1', int1), ('int2', int2),
                     ('int4', int4), ('int4', int4)])
 log.set_conditions(c0, T_C, total_time, n_time)
-log.initialize(each=100, flush=False)
+log.initialize(False)
 
 for i in range(n_time):
     try:
@@ -80,11 +81,11 @@ for i in range(n_time):
                                   bcn=(1, 0, 0, int4.ci_fcc))
                 fer2.c.fill(int4.ci_bcc)
 
-                mart.update_grid()
-                aus1.update_grid(vn=int2.v)
-                fer1.update_grid(v0=int2.v, vn=int3.v)
-                aus2.update_grid(v0=int3.v, vn=int4.v)
-                fer2.update_grid(v0=int4.v)
+                mart.update_grid(i)
+                aus1.update_grid(i, vn=int2.v)
+                fer1.update_grid(i, v0=int2.v, vn=int3.v)
+                aus2.update_grid(i, v0=int3.v, vn=int4.v)
+                fer2.update_grid(i, v0=int4.v)
             else:
                 # Initialize new configuration
                 fer1_diss = True
@@ -113,11 +114,11 @@ for i in range(n_time):
                               bcn=(1, 0, 0, int2.ci_fcc))
             fer2.c.fill(int2.ci_bcc)
 
-            mart.update_grid()
-            aus1.update_grid(vn=int2.v)
-            aus2.update_grid()
-            fer1.update_grid()
-            fer2.update_grid(v0=int2.v)
+            mart.update_grid(i)
+            aus1.update_grid(i, vn=int2.v)
+            aus2.update_grid(i)
+            fer1.update_grid(i)
+            fer2.update_grid(i, v0=int2.v)
 
             j += 1
 
@@ -125,7 +126,7 @@ for i in range(n_time):
         print(i+1, j)
         raise
 
-    log.print(i)
+    log.print(i, each)
 
 log.close()
 
