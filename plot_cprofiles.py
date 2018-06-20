@@ -102,7 +102,7 @@ if __name__ == '__main__':
             try:
                 fig, ax = plt.subplots(figsize=(8, 5))
                 cprofiles = CProfiles(basename)
-                cprofiles.get_time()
+                cprofiles.load_time()
                 
                 if len(t_sel) > 0:
                     for t in t_sel:
