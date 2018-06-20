@@ -49,6 +49,7 @@ def parse_slice(slc, dtype=int):
 if __name__ == '__main__':
     import sys
     import os
+    import numpy as np
     from matplotlib import rcParams
     import matplotlib.pyplot as plt
     from cpartition import x2wp, CProfiles
@@ -78,6 +79,10 @@ if __name__ == '__main__':
         sel, args = lookup_option('-s', args, int, [])
         sel = sorted(sel)
 
+        t_sel = []
+        t_sel, args = lookup_option('-t', args, float, [])
+        t_sel = sorted(t_sel)
+
         tmin, tmax, each = None, None, None
         every, args = lookup_option('-e', args, str, [])
         if len(every) > 0:
@@ -97,6 +102,13 @@ if __name__ == '__main__':
             try:
                 fig, ax = plt.subplots(figsize=(8, 5))
                 cprofiles = CProfiles(basename)
+                cprofiles.get_time()
+                
+                if len(t_sel) > 0:
+                    for t in t_sel:
+                        matches, = np.where(cprofiles.t == t)
+                        sel += list(matches)
+
                 cprofiles.plot_cprofiles(ax=ax,
                                         slc=slice(tmin, tmax, each), sel=sel,
                                         mirror=mirror, func=lambda x: x2wp(x, y=y),
