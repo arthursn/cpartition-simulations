@@ -16,6 +16,7 @@ dt = 5e-2
 total_time = 1000
 n_time = int(total_time/dt)
 t = (np.arange(n_time) + 1)*dt
+each = 100
 
 tdata_fcc = 'thermo/FoFo/TCFE8/375-fcc.txt'
 tdata_bcc = 'thermo/FoFo/TCFE8/375-bcc.txt'
@@ -38,7 +39,7 @@ log = SimulationLog(basename)
 log.set_domains([('mart', mart), ('aust', aust)])
 log.set_interfaces([('intf', intf)])
 log.set_conditions(c0, T_C, total_time, n_time)
-log.initialize(100, False)
+log.initialize(False)
 
 for i in range(n_time):
     J, = intf.flux('fcc')
@@ -51,10 +52,10 @@ for i in range(n_time):
     else:
         aust.FDM_implicit(bc0=(1., 0, 0, cCCEtheta))
 
-    mart.update_grid()
-    aust.update_grid()
+    mart.update_grid(i)
+    aust.update_grid(i)
 
-    log.print(i)
+    log.print(i, each)
 
 log.close()
 
