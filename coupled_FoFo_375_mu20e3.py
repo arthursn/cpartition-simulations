@@ -13,11 +13,11 @@ basename = os.path.basename(__file__).replace('.py', '')
 c0 = 3.34414e-02
 T_C = 375.
 
-control_itsteps = ControlIterationSteps([5e-5, 5e-4, 5e-3], [0, 2, 20, 200])
+control_itsteps = ControlIterationSteps([5e-4, 5e-3, 5e-2], [0, 5, 50, 1000])
 total_time = control_itsteps.total_time
 n_time = control_itsteps.ntime
 dt = control_itsteps.dt
-each = 200
+each = 20
 control_itsteps.print_summary()
 
 tdata_fcc = 'thermo/FoFo/TCFE8/375-fcc.txt'
@@ -40,6 +40,9 @@ int2 = Interface(domain1=aus1, domain2=fer1, type_int='mobile.mmode')
 int3 = Interface(domain1=fer1, domain2=aus2, type_int='mobile.mmode')
 int4 = Interface(domain1=aus2, domain2=fer2, type_int='mobile.mmode')
 
+pos_mart = mart.z[-1]
+j, aus1_diss = -1, False
+
 # fixed composition set by CCEtheta in austenite at the interface
 muC = 20e3
 int1.ci_fcc = aus1.mu2x['C'](muC)
@@ -56,8 +59,6 @@ log.set_interfaces([('int1', int1), ('int2', int2),
 log.set_conditions(c0, T_C, total_time, n_time)
 log.initialize(False)
 
-upgrade = False
-
 for i in control_itsteps.itlist:
     if i in control_itsteps.itstepi and i > 0:
         control_itsteps.next_itstep()
@@ -69,30 +70,69 @@ for i in control_itsteps.itlist:
         aus2.dt = dt
         fer2.dt = dt
 
-    # interface velocities at the mobile interfaces
-    int2.v = 1e6*int2.chem_driving_force()*int2.M()/fer1.Vm
-    int2.comp(poly_deg=3)
-    int3.v = 1e6*int3.chem_driving_force()*int3.M()/fer1.Vm
-    int3.comp(poly_deg=3)
-    int4.v = 1e6*int4.chem_driving_force()*int4.M()/fer2.Vm
-    int4.comp(poly_deg=3)
+    try:
+        if not aus1_diss:
+            # interface velocities at the mobile interfaces
+            int2.v = 1e6*int2.chem_driving_force()*int2.M()/fer1.Vm
+            int2.comp(poly_deg=3)
+            int3.v = 1e6*int3.chem_driving_force()*int3.M()/fer1.Vm
+            int3.comp(poly_deg=3)
+            int4.v = 1e6*int4.chem_driving_force()*int4.M()/fer2.Vm
+            int4.comp(poly_deg=3)
 
-    J, = int1.flux('fcc')
-    # update compositions
-    mart.FDM_implicit(bcn=(1.5, -2., .5, -J*mart.dz/mart.D(mart.c[-1])))
-    aus1.FDM_implicit(bc0=(1, 0, 0, int1.ci_fcc),
-                      bcn=(1, 0, 0, int2.ci_fcc))
-    fer1.c[:] = np.linspace(int2.ci_bcc, int3.ci_bcc, fer1.n)
-    aus2.FDM_implicit(bc0=(1, 0, 0, int3.ci_fcc),
-                      bcn=(1, 0, 0, int3.ci_fcc))
-    fer2.c[:] = int4.ci_bcc
+            pos_fer1 = fer1.z[0] + int2.v*dt
+            if pos_fer1 > pos_mart:
+                if aus1.r.max() > 1. and len(aus1.z) > 3:
+                    n = int(len(aus1.z)/2)
+                    z, c = aus1.z, aus1.c
+                    aus1.z = np.linspace(z[0], z[-1], n)
+                    aus1.c = interp1d(z, c)(aus1.z)
+                    aus1.initialize_grid()
+                    print('aus1', i+1, n)
 
-    # update position of interfaces and interpolate compositions
-    mart.update_grid(i)
-    aus1.update_grid(i, vn=int2.v)
-    fer1.update_grid(i, v0=int2.v, vn=int3.v)
-    aus2.update_grid(i, v0=int3.v, vn=int4.v)
-    fer2.update_grid(i, v0=int4.v)
+                J, = int1.flux('fcc')
+                # update compositions
+                mart.FDM_implicit(bcn=(1.5, -2., .5, -J*mart.dz/mart.D(mart.c[-1])))
+                aus1.FDM_implicit(bc0=(1, 0, 0, int1.ci_fcc),
+                                  bcn=(1, 0, 0, int2.ci_fcc))
+                fer1.c[:] = np.linspace(int2.ci_bcc, int3.ci_bcc, fer1.n)
+                aus2.FDM_implicit(bc0=(1, 0, 0, int3.ci_fcc),
+                                  bcn=(1, 0, 0, int3.ci_fcc))
+                fer2.c[:] = int4.ci_bcc
+
+                # update position of interfaces and interpolate compositions
+                mart.update_grid(i)
+                aus1.update_grid(i, vn=int2.v)
+                fer1.update_grid(i, v0=int2.v, vn=int3.v)
+                aus2.update_grid(i, v0=int3.v, vn=int4.v)
+                fer2.update_grid(i, v0=int4.v)
+            else:
+                aus1_diss = True
+                aus1.deactivate()
+
+        if aus1_diss:
+            int3.v = 1e6*int3.chem_driving_force()*int3.M()/fer1.Vm
+            int3.comp(poly_deg=3)
+            int4.v = 1e6*int4.chem_driving_force()*int4.M()/fer2.Vm
+            int4.comp(poly_deg=3)
+
+            # fer1.FDM_implicit(bcn=(1, 0, 0, int3.ci_bcc))
+            fer1.c.fill(int3.ci_bcc)
+            aus2.FDM_implicit(bc0=(1, 0, 0, int3.ci_fcc),
+                              bcn=(1, 0, 0, int4.ci_fcc))
+            fer2.c.fill(int4.ci_bcc)
+
+            mart.update_grid(i)
+            aus1.update_grid(i)
+            fer1.update_grid(i, vn=int3.v)
+            aus2.update_grid(i, v0=int3.v, vn=int4.v)
+            fer2.update_grid(i, v0=int4.v)
+
+            j += 1
+
+    except:
+        print('error', i+1, j)
+        raise
 
     log.print(i, criteria=lambda i: (i+1) % each == 0)
 

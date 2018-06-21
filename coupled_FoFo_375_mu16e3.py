@@ -13,18 +13,15 @@ basename = os.path.basename(__file__).replace('.py', '')
 c0 = 3.34414e-02
 T_C = 375.
 
-control_itsteps = ControlIterationSteps([5e-5, 5e-4, 5e-3, 5e-2], [0, .2, 2, 20, 100])
+control_itsteps = ControlIterationSteps([5e-4, 5e-3, 5e-2], [0, 1, 100, 1000])
 total_time = control_itsteps.total_time
 n_time = control_itsteps.ntime
 dt = control_itsteps.dt
-each = 200
+each = 20
 control_itsteps.print_summary()
 
 tdata_fcc = 'thermo/FoFo/TCFE8/375-fcc.txt'
 tdata_bcc = 'thermo/FoFo/TCFE8/375-bcc.txt'
-# tdata_mart = 'thermo/FoFo/TCFE0/BCC_CEM_ORTHO_375.TXT'
-# tdata_fcc = 'thermo/FoFo/TCFE0/375-FCC.TXT'
-# tdata_bcc = 'thermo/FoFo/TCFE0/375-BCC.TXT'
 
 mart = BCC(T_C=T_C, dt=dt, z=np.linspace(-1.16, -.66, 20), c0=c0,
            n_time=n_time, tdata=tdata_bcc,
@@ -43,7 +40,7 @@ int2 = Interface(domain1=aus1, domain2=fer1, type_int='mobile.mmode')
 int3 = Interface(domain1=fer1, domain2=aus2, type_int='mobile.mmode')
 int4 = Interface(domain1=aus2, domain2=fer2, type_int='mobile.mmode')
 
-pos_mart = -.5
+pos_mart = mart.z[-1]
 j, aus1_diss = -1, False
 
 # fixed composition set by CCEtheta in austenite at the interface
@@ -110,15 +107,6 @@ for i in control_itsteps.itlist:
                 fer2.update_grid(i, v0=int4.v)
             else:
                 aus1_diss = True
-                z, c, cavg = merge_domains(mart, fer1)
-                n = int(np.abs((z[-1] - z[0])/mart.dz))
-                print('fer1', i+1, n)
-
-                fer1.z = np.linspace(z[0], z[-1], n)
-                fer1.c = interp1d(z, c)(fer1.z)
-                fer1.initialize_grid()
-
-                mart.deactivate()
                 aus1.deactivate()
 
         if aus1_diss:
@@ -127,7 +115,8 @@ for i in control_itsteps.itlist:
             int4.v = 1e6*int4.chem_driving_force()*int4.M()/fer2.Vm
             int4.comp(poly_deg=3)
 
-            fer1.FDM_implicit(bcn=(1, 0, 0, int3.ci_bcc))
+            # fer1.FDM_implicit(bcn=(1, 0, 0, int3.ci_bcc))
+            fer1.c.fill(int3.ci_bcc)
             aus2.FDM_implicit(bc0=(1, 0, 0, int3.ci_fcc),
                               bcn=(1, 0, 0, int4.ci_fcc))
             fer2.c.fill(int4.ci_bcc)
