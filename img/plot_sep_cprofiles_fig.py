@@ -28,7 +28,7 @@ except:
     ci = pd.read_table('../C_extremities/{}.txt'.format(basename), sep=' ')
 
 tracking = False
-ncol = 3
+ncol = 2
 nrow = len(tlist)//ncol
 
 fig, axes = plt.subplots(nrow, ncol, figsize=(4*ncol, 3*nrow))
