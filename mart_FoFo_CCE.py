@@ -51,7 +51,7 @@ for i in control_itsteps.itlist:
     mart.update_grid(i)
     aust.update_grid(i)
 
-    log.print(i, each)
+    log.printit(i, each)
 
 log.close()
 
@@ -92,7 +92,7 @@ log.close()
 #     mart.update_grid(it2)
 #     aust.update_grid(it2)
 
-#     log.print(it2, each, total_time_1, dt, criteria=new_crit)
+#     log.printit(it2, each, total_time_1, dt, criteria=new_crit)
 
 
 log.close()

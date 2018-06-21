@@ -63,7 +63,7 @@ for i in control_itsteps.itlist:
     mart.update_grid(i)
     aust.update_grid(i)
 
-    log.print(i, each)
+    log.printit(i, each)
 
 log.close()
 

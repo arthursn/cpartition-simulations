@@ -17,7 +17,7 @@ control_itsteps = ControlIterationSteps([5e-5, 5e-4, 5e-3, 5e-2], [0, .2, 2, 20,
 total_time = control_itsteps.total_time
 n_time = control_itsteps.ntime
 dt = control_itsteps.dt
-each = 200
+each = 20
 control_itsteps.print_summary()
 
 tdata_fcc = 'thermo/FoFo/TCFE8/375-fcc.txt'
@@ -96,7 +96,7 @@ for i in control_itsteps.itlist:
     aus2.update_grid(i, v0=int3.v, vn=int4.v)
     fer2.update_grid(i, v0=int4.v)
 
-    log.print(i, criteria=lambda i: (i+1) % each == 0)
+    log.printit(i, criteria=lambda i: (i+1) % each == 0)
 
 log.close()
 

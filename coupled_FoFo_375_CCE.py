@@ -134,7 +134,7 @@ for i in control_itsteps.itlist:
         print(i+1, j)
         raise
 
-    log.print(i, criteria=lambda i: (i+1) % each == 0)
+    log.printit(i, criteria=lambda i: (i+1) % each == 0)
 
 log.close()
 
