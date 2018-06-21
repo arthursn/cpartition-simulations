@@ -13,7 +13,7 @@ basename = os.path.basename(__file__).replace('.py', '')
 c0 = 3.34414e-02
 T_C = 375.
 
-control_itsteps = ControlIterationSteps([5e-5, 5e-4, 5e-3, 5e-2], [0, .1, 1, 10, 1000])
+control_itsteps = ControlIterationSteps([5e-5, 5e-4, 5e-3, 5e-2], [0, 1, 10, 100, 1000])
 total_time = control_itsteps.total_time
 n_time = control_itsteps.ntime
 dt = control_itsteps.dt
@@ -22,10 +22,8 @@ control_itsteps.print_summary()
 
 tdata_fcc = 'thermo/FoFo/TCFE8/375-fcc.txt'
 tdata_bcc = 'thermo/FoFo/TCFE8/375-bcc.txt'
-# tdata_fcc = 'thermo/FoFo/TCFE0/375-FCC.TXT'
-# tdata_bcc = 'thermo/FoFo/TCFE0/375-BCC.TXT'
 
-mart = BCC(T_C=T_C, dt=dt, z=np.linspace(-1.16, -.66, 40), c0=c0,
+mart = BCC(T_C=T_C, dt=dt, z=np.linspace(-1.16, -.66, 50), c0=c0,
            tdata=tdata_bcc,
            type_D='carbides', cmax_bcc=5.4e-4, c_carbide=.25)
 aus1 = FCC(T_C=T_C, dt=dt, z=np.linspace(-.66, -.33, 100), c0=c0,
