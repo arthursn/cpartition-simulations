@@ -124,6 +124,7 @@ for i in control_itsteps.itlist:
             int4.v = 1e6*int4.chem_driving_force()*int4.M()/fer2.Vm
             int4.comp(poly_deg=3)
 
+            mart.FDM_implicit()
             # fer1.FDM_implicit(bcn=(1, 0, 0, int3.ci_bcc))
             fer1.c.fill(int3.ci_bcc)
             aus2.FDM_implicit(bc0=(1, 0, 0, int3.ci_fcc),
