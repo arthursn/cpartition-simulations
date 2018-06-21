@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from cpartition import FCC, BCC, Interface, WBs, x2wp
 
-# import matplotlib
-# matplotlib.rc('font', **{'family':'sans-serif', 'sans-serif':['Arial'], 'size': 16})
+import matplotlib
+matplotlib.rc('font', **{'family':'sans-serif', 'sans-serif':['Arial'], 'size': 13})
 
 # Site fraction of substitutional elements in cast iron's austenite
 T_C = 375
@@ -32,14 +32,14 @@ tf = pos['t'].values[-1]
 # Ploting interface position and composition
 
 # Setting pre-plot parameters
-fig1, ax1 = plt.subplots(figsize=(6, 4))
+fig1, ax1 = plt.subplots(figsize=(4, 4))
 
 # composition
 ax1.plot(cint['t'], x2wp(cint['aus1.cin'], y=y),
          'k-', label=r'$c^\gamma_{int_1}$')
 ax1.axhline(cwbs, c='k', ls=':')
 
-ax1.text(x=1000, y=cwbs - .01, s=u'WBs ({:.2f} %)'.format(cwbs),
+ax1.text(x=990, y=cwbs - .01, s=u'WBs ({:.2f} %)'.format(cwbs),
          fontsize=16, ha='right', va='top')
 ax1.set_ylim(cwbs - .17, cwbs + .17)
 ax1.set_xlabel(u'Tempo (s)')
@@ -51,7 +51,7 @@ ax2.plot(pos['t'], pos['aus1.sn'], 'k--', label=u'Posição da interface')
 
 ax2.set_xlim(1e0, tf)
 ax2.set_xscale('log')
-ax2.set_ylim(pos0 - .05, pos0 + .2)
+ax2.set_ylim(pos0 - .1, pos0 + .25)
 ax2.set_ylabel(u'Posição da interface (μm)')
 ax2.invert_yaxis()
 
@@ -61,7 +61,7 @@ ax2.legend(loc='upper right', fancybox=False)
 
 # Ploting driving force
 
-fig3, ax3 = plt.subplots(figsize=(6, 4))
+fig3, ax3 = plt.subplots(figsize=(4, 4))
 
 ax3.plot(cint['t'], DF, 'k-', label="Força motriz")
 ax3.set_xlim(1e0, tf)
@@ -72,11 +72,15 @@ ax3.set_ylabel(u'Força motriz (J/mol)')
 ax3.legend(loc='upper right', fancybox=False)
 ax3.axhline(0, c='k', ls=':')
 
-# plt.tight_layout()
-# output = 'img/growth_bainite_08C_350.pdf'
-fig1.savefig(('/home/arthur/tese/img/cpartition/'
-              'aus1fer1_interface_comp.svg'), bbox_inches='tight')
-fig3.savefig(('/home/arthur/tese/img/cpartition/'
-              'aus1fer1_interface_DF.svg'), bbox_inches='tight')
+f1 = '/home/arthur/tese/img/cpartition/aus1fer1_interface_comp.svg'
+f2 = '/home/arthur/tese/img/cpartition/aus1fer1_interface_DF.svg'
+
+fig1.savefig(f1, bbox_inches='tight')
+fig3.savefig(f2, bbox_inches='tight')
+
+import os
+os.system('svg2pdf ' + f1)
+os.system('svg2pdf ' + f2)
+
 plt.show()
 plt.close()
