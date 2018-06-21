@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 if __name__ == '__main__':
+    import os
     import sys
     from matplotlib import rcParams
     import matplotlib.pyplot as plt
@@ -17,15 +18,16 @@ if __name__ == '__main__':
 
     if len(sys.argv) > 1:
         for basename in sys.argv[1:]:
-            print(basename)
-
             cprofiles = CProfiles(basename)
+            
+            print(cprofiles.basename)
+
             ax = cprofiles.plot_colormap(mirror=True,
                                          func=lambda x: x2wp(x, y=y),
                                          vmin=0, vmax=1.8)
             ax.set_xlabel(u'Position (μm)')
             ax.set_ylabel('Time (s)')
-            
+
             # ax = cprofiles.plot_cprofiles(each=100, mirror=True,
             #                              func=lambda x: x2wp(x, y=y),
             #                              vmin=0, vmax=1.8)
@@ -34,9 +36,10 @@ if __name__ == '__main__':
             # ax.legend()
 
             ax.set_title(cprofiles.basename)
-            
-            # plt.savefig('img/' + fname.split('.')[0] + '.png', dpi=150)
-            # plt.close()
+
+            plt.savefig(os.path.join(
+                'img', cprofiles.basename + '.png'), dpi=150)
+            plt.close()
 
         plt.show()
     else:
