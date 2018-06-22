@@ -11,8 +11,8 @@ if __name__ == '__main__':
     from parse_args import lookup_option, split_string
 
     rcParams.update({'font.family': 'sans-serif',
-                 'font.sans-serif': 'Arial',
-                 'font.size': 13})
+                     'font.sans-serif': 'Arial',
+                     'font.size': 13})
 
     y = dict(Cu=3.55354266E-3, Mn=2.05516602E-3,
              Si=5.02504411E-2, Fe=9.4414085022e-1)
@@ -34,11 +34,11 @@ if __name__ == '__main__':
             mu[selbyc] = mart.x2mu['C'](c[selbyc])
         else:
             mu[sel] = mart.x2mu['C'](c[sel])
-        
+
         sel = (strct == 'fer1') | (strct == 'fer2')
         mu[sel] = ferr.x2mu['C'](c[sel])
 
-        sel = (strct == 'aus1') | (strct == 'aus2')
+        sel = (strct == 'aus1') | (strct == 'aus2') | (strct == 'aust')
         mu[sel] = aust.x2mu['C'](c[sel])
 
         return 1e-3*mu
@@ -71,7 +71,8 @@ if __name__ == '__main__':
         save = True if len(save) > 0 else False
 
         directory, args = lookup_option('-dir', args, str, [])
-        directory = directory[-1] if len(directory) > 0 else '/home/arthur/tese/img/cpartition/muprofiles/'
+        directory = directory[-1] if len(
+            directory) > 0 else '/home/arthur/tese/img/cpartition/muprofiles/'
 
         # Plotting options
         xlim, args = lookup_option('-xlim', args, str, [])
@@ -87,12 +88,15 @@ if __name__ == '__main__':
         figsize = figsize if len(figsize) == 2 else (6, 4)
 
         # Options passed to cprofiles
+        tracking, args = lookup_option('-tracking', args, None, [])
+        tracking = True if len(tracking) > 0 else False
+
         tlist, args = lookup_option('-t', args, float, [], True)
         tlist = sorted(tlist)
 
         mumart, args = lookup_option('-mu', args, float, [])
-        mumart = mumart[-1] if len(mumart) > 0 else None 
-        
+        mumart = mumart[-1] if len(mumart) > 0 else None
+
         csolubility, args = lookup_option('-sol', args, float, [])
         csolubility = csolubility[-1] if len(csolubility) > 0 else 5.4e-4
 
@@ -100,15 +104,23 @@ if __name__ == '__main__':
             fig, ax = plt.subplots(figsize=figsize)
 
             cprofiles = CProfiles(basename, 'C_profiles')
-            
+
             for t in tlist:
                 j, = cprofiles.where_tlist([t], [])
-                
+
                 strct = cprofiles.ss[j]
                 cprofiles.plot_cprofiles(ax=ax, mirror=True,
-                                         func=lambda x: x2mu(x, strct, mumart, csolubility),
+                                         func=lambda x: x2mu(
+                                             x, strct, mumart, csolubility),
                                          tlist=[t])
 
+                if tracking:
+                    cprofiles.plot_locus_interface([('aus1.sn', 'aus1.cin'),
+                                                    ('aus2.s0', 'aus2.ci0'),
+                                                    ('aus2.sn', 'aus2.cin')],
+                                                   ax=ax, mirror=True,
+                                                   func=lambda x: 1e-3*aust.x2mu['C'](x),
+                                                   color='k', ls=':', lw=1, label='')
             ax.set_xlim(*xlim)
             ax.set_xlim(*ylim)
 
@@ -117,7 +129,8 @@ if __name__ == '__main__':
             ax.legend(fancybox=False)
 
             if save:
-                fname = os.path.join(directory, cprofiles.basename + suffix + ext)
+                fname = os.path.join(
+                    directory, cprofiles.basename + suffix + ext)
                 plt.savefig(fname, bbox_inches='tight')
                 os.system('svg2pdf ' + fname)
 
