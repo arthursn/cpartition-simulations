@@ -1,73 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import sys
-import os
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from cpartition import FCC, BCC, Interface, WBs, CProfiles, x2wp
-
-
-def lookup_option(option, args, dtype=None, vallist=[], multi=False):
-    """
-    Get options in list of arguments
-    """
-    if option in args:
-        idx = args.index(option)
-        args.pop(idx)
-        if dtype:
-            try:
-                if multi:
-                    while True:
-                        try:
-                            val = args[idx]
-                            val = dtype(val)
-                        except:
-                            break
-                        else:
-                            vallist += [val]
-                            args.pop(idx)
-                else:
-                    val = args.pop(idx)
-                    val = dtype(val)
-                    vallist += [val]
-            except IndexError:
-                print('No argument provided')
-            except ValueError:
-                print('Failed parsing {} as {}'.format(val, dtype))
-            except:
-                print('Unexpected error')
-        else:
-            vallist += [True]
-
-    while option in args:
-        vallist, args = lookup_option(option, args, dtype, vallist)
-
-    return vallist, args
-
-
-def filter_number(s, dtype=int):
-    if s == '':
-        s = None
-    else:
-        try:
-            s = dtype(s)
-        except:
-            raise
-    return s
-
-
-def split_string(string, dtype=int, splitchar=':'):
-    spt = []
-    try:
-        spt = list(map(lambda s: filter_number(
-            s, dtype), string.split(splitchar)))
-    except:
-        print('Failed parsing {}'.format(string))
-    return spt
-
-
 if __name__ == '__main__':
+    import sys
+    import os
+    import numpy as np
+    import pandas as pd
+    import matplotlib
+    import matplotlib.pyplot as plt
+    from cpartition import FCC, BCC, Interface, WBs, CProfiles, x2wp
+    from itertools import cycle
+    from parse_args import lookup_option, split_string
+
+    colorcycle = cycle(
+        matplotlib.rcParams['axes.prop_cycle'].by_key()['color'])
+
     y = dict(Cu=3.55354266E-3, Mn=2.05516602E-3,
              Si=5.02504411E-2, Fe=9.4414085022e-1)
 
@@ -83,51 +29,61 @@ if __name__ == '__main__':
     args = sys.argv[1:]
 
     if len(args) > 1:
-        show, args = lookup_option('-show', args, None, [])
-        if len(show) > 0:
-            show = True
-        else:
-            show = False
-
+        # Saving options
         save, args = lookup_option('-save', args, None, [])
-        if len(save) > 0:
-            save = True
-        else:
-            save = False
+        save = True if len(save) > 0 else False
 
         directory, args = lookup_option('-dir', args, str, [])
-        if len(directory) > 0:
-            directory = directory[-1]
-        else:
-            directory = '/home/arthur/tese/img/cpartition/cprofiles/'
+        directory = directory[-1] if len(directory) > 0 else '/home/arthur/tese/img/cpartition/cprofiles/'
+
+        suffix, args = lookup_option('-suffix', args, str, [])
+        suffix = suffix[-1] if len(suffix) > 0 else ''
+
+        ext, args = lookup_option('-ext', args, str, [])
+        ext = '.' + ext[-1].strip('.') if len(ext) > 0 else '.svg'
+
+        # Plotting options
+        xlim, args = lookup_option('-xlim', args, str, [])
+        xlim = split_string(xlim[-1], float) if len(xlim) > 0 else (None, None)
+
+        ylim, args = lookup_option('-ylim', args, str, [])
+        ylim = split_string(ylim[-1], float) if len(ylim) > 0 else (None, None)
+
+        show, args = lookup_option('-show', args, None, [])
+        show = True if len(show) > 0 else False
+
+        figsize, args = lookup_option('-figsize', args, float, [], True)
+        figsize = figsize if len(figsize) == 2 else (6, 4)
+
+        # Options passed to cprofiles
+        mirror, args = lookup_option('-mirror', args, None, [])
+        mirror = True if len(mirror) > 0 else False
 
         tracking, args = lookup_option('-tracking', args, None, [])
-        if len(tracking) > 0:
-            tracking = True
-        else:
-            tracking = False
+        tracking = True if len(tracking) > 0 else False
 
         tlist, args = lookup_option('-t', args, float, [], True)
         tlist = sorted(tlist)
 
-        xlim, args = lookup_option('-xlim', args, str, [])
-        if len(xlim) > 0:
-            xlim = split_string(xlim[-1], float)
-        else:
-            xlim = (None, None)
+        # Special bois
+        mommysaysimspecial, args = lookup_option('-special', args, None, [])
+        mommysaysimspecial = True if len(mommysaysimspecial) > 0 else False
 
-        ylim, args = lookup_option('-ylim', args, str, [])
-        if len(ylim) > 0:
-            ylim = split_string(ylim[-1], float)
-        else:
-            ylim = (None, None)
+        wbs, args = lookup_option('-wbs', args, None, [])
+        wbs = True if len(wbs) > 0 else False
+
+        miniall, args = lookup_option('-all', args, None, [])
+        miniall = True if len(miniall) > 0 else False
+
+        if miniall:
+            tlist.append(tlist.copy())
 
         ncol = 2
-        nrow = len(tlist)//ncol
-        
+        nrow = int(np.ceil(len(tlist)/ncol))
+
         for basename in args:
             cprofiles = CProfiles(basename, 'C_profiles')
-            
+
             if tracking:
                 pos = pd.read_table(
                     'pos_extremities/{}.txt'.format(cprofiles.basename), sep=' ')
@@ -138,11 +94,16 @@ if __name__ == '__main__':
             axes = axes.ravel()
 
             for i, (t, ax) in enumerate(zip(tlist, axes)):
+                kw = dict(lw=1)
+                if not isinstance(t, list):
+                    t = [t]
+                    kw['color'] = next(colorcycle)
+
                 cprofiles.plot_cprofiles(ax=ax, mirror=True,
                                          func=lambda x: x2wp(x, y=y),
-                                         tlist=[t], color='k', lw=1)
+                                         tlist=t, **kw)
                 if i == 0:
-                    j, = cprofiles.where_tlist([t], [])
+                    j, = cprofiles.where_tlist(t, [])
                     idx, = np.where(cprofiles.ss[j] == 'aus1')
                     idx = idx[0]
                     zmax = 2*cprofiles.zz[j][-1] - cprofiles.zz[j][idx]
@@ -151,20 +112,32 @@ if __name__ == '__main__':
                 if tracking:
                     ax.plot(pos['aus1.sn'], x2wp(ci['aus1.cin'], y=y), 'k:')
 
-                # ax.axhline(cwbs, color='k', ls='-.')
-                # ax.text(1.1, cwbs + .1, s='WBs', ha='right')
-                ax.text(.01, .9, s='{} s'.format(t), transform=ax.transAxes)
+                if len(t) == 1:
+                    ax.text(.01, .9, s='{:g} s'.format(
+                        t[0]), transform=ax.transAxes)
 
-                ax.set_xlim(*xlim)
+                    if wbs:
+                        ax.axhline(cwbs, color='k', ls='-.')
+                        ax.text(1.1, cwbs + .1, s='WBs', ha='right')
+
+                    # special axis dimensions
+                    if mommysaysimspecial:
+                        if i > 1:
+                            ax.set_ylim(-.1, 2.5)
+                        else:
+                            ax.set_ylim(-.1)
+                else:
+                    ax.text(.01, .9, s='Todos', transform=ax.transAxes)
+
                 ax.set_ylim(*ylim)
-                # if i > 1:
-                #     ax.set_ylim(0, 2.5)
-                # else:
-                #     ax.set_ylim(0)
+                ax.set_xlim(*xlim)
 
-                if i == len(tlist) - ncol:
+                if i == len(axes) - ncol:
                     ax.set_xlabel(u'Posição (µm)')
                     ax.set_ylabel('Teor de carbono (% massa)')
+
+            for ax in axes[i+1:]:
+                ax.set_axis_off()
 
             ax = axes[0]
             cmax = x2wp(cmax, y=y)
@@ -173,7 +146,8 @@ if __name__ == '__main__':
                         arrowprops=dict(arrowstyle='->'))
 
             if save:
-                fname = os.path.join(directory, cprofiles.basename + '_sep.svg')
+                fname = os.path.join(
+                    directory, cprofiles.basename + '_sep.svg')
                 fig.savefig(fname, bbox_inches='tight')
                 os.system('svg2pdf ' + fname)
 
