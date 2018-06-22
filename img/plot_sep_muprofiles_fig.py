@@ -28,7 +28,7 @@ except:
 
 tracking = False
 ncol = 2
-nrow = len(tlist)//ncol
+nrow = int(np.ceil(len(tlist)/ncol))
 
 fig, axes = plt.subplots(nrow, ncol, figsize=(4*ncol, 3*nrow))
 axes = axes.ravel()
@@ -58,7 +58,7 @@ for i, (t, ax) in enumerate(zip(tlist, axes)):
     ax.set_xlim(-1.16, 1.16)
     ax.set_ylim(10, 60)
 
-    if i == len(tlist) - ncol:
+    if i == len(axes) - ncol:
         ax.set_xlabel(u'Posição (µm)')
         ax.set_ylabel(r'$\mu_C$ (kJ/mol)')
 

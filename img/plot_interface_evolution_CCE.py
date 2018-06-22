@@ -24,9 +24,9 @@ _, cwbs = intf.comp()
 cwbs = x2wp(cwbs, y=y)
 
 # Driving force
-DF = intf.chem_driving_force(ci_bcc=cint['fer1.ci0'], ci_fcc=cint['aus1.cin'])
+DF = -intf.chem_driving_force(ci_bcc=cint['fer1.ci0'], ci_fcc=cint['aus1.cin'])
 
-pos0 = pos['aus1.sn'].values[0]
+posf = pos['aus1.sn'].values[-1]
 tf = pos['t'].values[-1]
 
 # Ploting interface position and composition
@@ -49,9 +49,9 @@ ax1.set_ylabel(r'$c^\gamma_{int_1}$ (% massa)')
 ax2 = ax1.twinx()
 ax2.plot(pos['t'], pos['aus1.sn'], 'k--', label=u'Posição da interface')
 
-ax2.set_xlim(1e0, tf)
+ax2.set_xlim(1e-1, tf)
 ax2.set_xscale('log')
-ax2.set_ylim(pos0 - .1, pos0 + .25)
+ax2.set_ylim(posf - .15, posf + .15)
 ax2.set_ylabel(u'Posição da interface (μm)')
 ax2.invert_yaxis()
 
@@ -64,7 +64,7 @@ ax2.legend(loc='upper right', fancybox=False)
 fig3, ax3 = plt.subplots(figsize=(4, 4))
 
 ax3.plot(cint['t'], DF, 'k-', label="Força motriz")
-ax3.set_xlim(1e0, tf)
+ax3.set_xlim(1e-1, tf)
 ax3.set_xscale('log')
 ax3.set_ylim(-20, 20)
 ax3.set_xlabel('Tempo (s)')
