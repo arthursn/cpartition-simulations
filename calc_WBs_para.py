@@ -1,36 +1,44 @@
-#!/usr/bin/env python
+if __name__ == '__main__':
+    import sys
+    
+    if len(sys.argv) > 1:
+        import numpy as np
+        from cpartition import BCC, FCC, WBs
+        from scipy.optimize import bisect
+        from scipy.interpolate import interp1d
 
-import numpy as np
-import time
+        for T in sys.argv[1:]:
+            try:
+                T = float(T)
+            except:
+                print('{} is not a valid temperature'.format(T))
+                continue
 
-import sys
-import os
-sys.path.insert(1, '/home/arthur/Dropbox/python')
-from cpartition import *
+            tdata_fcc = 'thermo/FoFo/TCFE8/{:.0f}-fcc.txt'.format(T)
+            tdata_bcc = 'thermo/FoFo/TCFE8/{:.0f}-bcc.txt'.format(T)
+            # tdata_fcc = 'thermo/FoFo/TCFE0/375-FCC.TXT'
+            # tdata_bcc = 'thermo/FoFo/TCFE0/375-BCC.TXT'
+            try:
+                aust = FCC(T_C=T, tdata=tdata_fcc)
+                ferr = BCC(T_C=T, tdata=tdata_bcc, E=WBs(T))
+            except:
+                print('Failed to initialize ferr and/or aust')
+                continue
 
-from scipy.interpolate import interp1d
+            # We want to find the zero of this function, which
+            # is the difference between muZ(aust) and muZ(ferr)
+            # both expressed as functions of muC
+            # When g(muC) = 0, then muC and muZ are equal for
+            # ferr and aust
+            def g(muC): return aust.muC2muZ(muC) - ferr.muC2muZ(muC)
 
 
-T_C = 375.
+            # minimum and maximum values of mu_C
+            lo = max(min(aust.chempot['MU(C)']), min(ferr.chempot['MU(C)']))
+            hi = min(max(aust.chempot['MU(C)']), max(ferr.chempot['MU(C)']))
 
-tdata_fcc = 'thermo/FoFo/TCFE8/375-fcc.txt'
-tdata_bcc = 'thermo/FoFo/TCFE8/375-bcc.txt'
-# tdata_fcc = 'thermo/FoFo/TCFE0/375-FCC.TXT'
-# tdata_bcc = 'thermo/FoFo/TCFE0/375-BCC.TXT'
-aust = FCC(T_C=T_C, tdata=tdata_fcc)
-ferr = BCC(T_C=T_C, tdata=tdata_bcc, E=WBs(T_C))
+            muC = bisect(g, lo, hi, xtol=1e-3)
+            cferr = ferr.mu2x['C'](muC)
+            caust = aust.mu2x['C'](muC)
 
-def g(x): return aust.f(x) - ferr.f(x)
-lo, hi = max(min(aust.muC), min(ferr.muC)), min(max(aust.muC), max(ferr.muC))
-
-muC = bisect(g, lo, hi, xtol=1e-3)
-cferr = ferr.mu2x['C'](muC)
-caust = aust.mu2x['C'](muC)
-
-print('muC={:}, caust={:}\n'.format(muC, caust))
-
-# import matplotlib.pyplot as plt
-# plt.plot(aust.muZ, aust.muC)
-# plt.plot(ferr.muZ, ferr.muC)
-# plt.show()
-
+            print('{:}oC, muC={:}, caust={:}'.format(T, muC, caust))
