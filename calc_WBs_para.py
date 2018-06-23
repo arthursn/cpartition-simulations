@@ -1,11 +1,14 @@
 if __name__ == '__main__':
     import sys
-    
+
     if len(sys.argv) > 1:
         import numpy as np
-        from cpartition import BCC, FCC, WBs
+        from cpartition import BCC, FCC, WBs, x2wp
         from scipy.optimize import bisect
         from scipy.interpolate import interp1d
+
+        y = dict(Cu=3.55354266E-3, Mn=2.05516602E-3,
+                 Si=5.02504411E-2, Fe=9.4414085022e-1)
 
         for T in sys.argv[1:]:
             try:
@@ -32,7 +35,6 @@ if __name__ == '__main__':
             # ferr and aust
             def g(muC): return aust.muC2muZ(muC) - ferr.muC2muZ(muC)
 
-
             # minimum and maximum values of mu_C
             lo = max(min(aust.chempot['MU(C)']), min(ferr.chempot['MU(C)']))
             hi = min(max(aust.chempot['MU(C)']), max(ferr.chempot['MU(C)']))
@@ -41,4 +43,4 @@ if __name__ == '__main__':
             cferr = ferr.mu2x['C'](muC)
             caust = aust.mu2x['C'](muC)
 
-            print('{:}oC, muC={:}, caust={:}'.format(T, muC, caust))
+            print('{:g} oC, muC={:g} J/mol, caust={:g} wt.%'.format(T, muC, x2wp(caust, y=y)))
