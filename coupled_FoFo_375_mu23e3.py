@@ -22,8 +22,6 @@ control_itsteps.print_summary()
 
 tdata_fcc = 'thermo/FoFo/TCFE8/375-fcc.txt'
 tdata_bcc = 'thermo/FoFo/TCFE8/375-bcc.txt'
-# tdata_fcc = 'thermo/FoFo/TCFE0/375-FCC.TXT'
-# tdata_bcc = 'thermo/FoFo/TCFE0/375-BCC.TXT'
 
 mart = BCC(T_C=T_C, dt=dt, z=np.linspace(-1.16, -.66, 50), c0=c0,
            tdata=tdata_bcc,

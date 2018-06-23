@@ -22,10 +22,10 @@ control_itsteps.print_summary()
 tdata_fcc = 'thermo/FoFo/TCFE8/375-fcc.txt'
 tdata_bcc = 'thermo/FoFo/TCFE8/375-bcc.txt'
 
-mart = BCC(T_C=T_C, dt=dt, z=np.linspace(-1.16, -.66, 20), c0=c0,
+mart = BCC(T_C=T_C, dt=dt, z=np.linspace(-1.16, -.66, 50), c0=c0,
            n_time=n_time, tdata=tdata_bcc,
            type_D='carbides', cmax_bcc=5.4e-4, c_carbide=.3)
-aust = FCC(T_C=T_C, dt=dt, z=np.linspace(-.66, 0, 100), c0=c0,
+aust = FCC(T_C=T_C, dt=dt, z=np.linspace(-.66, 0, 200), c0=c0,
            n_time=n_time, tdata=tdata_fcc)
 
 intf = Interface(domain1=mart, domain2=aust, type_int='fixed.fluxes')
