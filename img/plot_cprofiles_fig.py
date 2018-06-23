@@ -98,7 +98,7 @@ if __name__ == '__main__':
               r'$\mu_C =$' + u' 30.0 kJ/mol',
               r"$\alpha'-\theta$" + u' para']
 
-    plot_cavg(files, labels, ax=ax4, lw=1)
+    plot_cavg(files, labels, ax=ax4, lw=1, y=y)
     ax4.axhline(c0, ls=':', color='k', lw=1)
     ax4.axhline(WBs, ls=':', color='k', lw=1)
     add_label(ax4, 'd)', py=0)

@@ -91,6 +91,7 @@ if __name__ == '__main__':
                     'C_extremities/{}.txt'.format(cprofiles.basename), sep=' ')
 
             fig, axes = plt.subplots(nrow, ncol, figsize=(4*ncol, 3*nrow))
+            # plt.subplots_adjust(wspace=.5, hspace=.5)
             axes = axes.ravel()
 
             for i, (t, ax) in enumerate(zip(tlist, axes)):
@@ -112,12 +113,15 @@ if __name__ == '__main__':
                 if tracking:
                     ax.plot(pos['aus1.sn'], x2wp(ci['aus1.cin'], y=y), 'k:')
 
-                if len(t) == 1:
-                    ax.text(.01, .9, s='{:g} s'.format(
-                        t[0]), transform=ax.transAxes)
+                ax.set_ylim(*ylim)
+                ax.set_xlim(*xlim)
 
+                if len(t) == 1:
+                    ax.text(.01, .85, s='{:g} s'.format(t[0]), transform=ax.transAxes)
+
+                    
                     if wbs:
-                        ax.axhline(cwbs, color='k', ls='-.')
+                        ax.axhline(cwbs, color='k', ls='--', lw=.8)
                         ax.text(1.1, cwbs + .1, s='WBs', ha='right')
 
                     # special axis dimensions
@@ -126,11 +130,10 @@ if __name__ == '__main__':
                             ax.set_ylim(-.1, 2.5)
                         else:
                             ax.set_ylim(-.1)
+                    
+                    cprofiles.label_phases(ax, t, mirror=True)
                 else:
                     ax.text(.01, .9, s='Todos', transform=ax.transAxes)
-
-                ax.set_ylim(*ylim)
-                ax.set_xlim(*xlim)
 
                 if i == len(axes) - ncol:
                     ax.set_xlabel(u'Posição (µm)')

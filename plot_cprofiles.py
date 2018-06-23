@@ -30,7 +30,8 @@ if __name__ == '__main__':
         save = True if len(save) > 0 else False
 
         directory, args = lookup_option('-dir', args, str, [])
-        directory = directory[-1] if len(directory) > 0 else '/home/arthur/tese/img/cpartition/cprofiles/'
+        directory = directory[-1] if len(
+            directory) > 0 else '/home/arthur/tese/img/cpartition/cprofiles/'
 
         suffix, args = lookup_option('-suffix', args, str, [])
         suffix = suffix[-1] if len(suffix) > 0 else ''
@@ -61,6 +62,9 @@ if __name__ == '__main__':
         figsize = figsize if len(figsize) == 2 else (6, 4)
 
         # Options passed to cprofiles
+        label, args = lookup_option('-label', args, None, [])
+        label = True if len(label) > 0 else False
+
         mirror, args = lookup_option('-mirror', args, None, [])
         mirror = True if len(mirror) > 0 else False
 
@@ -71,7 +75,8 @@ if __name__ == '__main__':
         tlist = sorted(tlist)
 
         every, args = lookup_option('-every', args, str, [])
-        tmin, tmax, each = split_string(every[-1]) if len(every) > 0 else (None, None, None)
+        tmin, tmax, each = split_string(
+            every[-1]) if len(every) > 0 else (None, None, None)
 
         for basename in args:
             try:
@@ -102,6 +107,16 @@ if __name__ == '__main__':
 
                 if title:
                     ax.set_title(cprofiles.basename)
+
+                if label:
+                    cprofiles.label_phases(ax=ax, t=tlist[-1],
+                                           labels=[('aus1', r'$\gamma_1$', 1),
+                                                   ('aus2', r'$\gamma_2$', 1),
+                                                   ('aust', r'$\gamma$', 1),
+                                                   ('mart', r"$\alpha'$", 1),
+                                                   ('fer1', r'$\alpha_{b1}$', 1),
+                                                   ('fer2', r'$\alpha_{b2}$', 1)],
+                                           mirror=mirror, size=12)
 
             if save:
                 fname = os.path.join(
