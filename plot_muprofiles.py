@@ -43,22 +43,6 @@ if __name__ == '__main__':
 
         return 1e-3*mu
 
-    # basename = 'coupled_FoFo_375_CCE'
-    # mumart = None
-    # tlist = [0.1, 1, 10, 60, 100, 1000]
-    # basename = 'coupled_FoFo_375_mu23e3'
-    # mumart = 23207
-    # basename = 'coupled_FoFo_375_mu20e3'
-    # mumart = 20e3
-    # basename = 'coupled_FoFo_375_mu30e3'
-    # mumart = 30e3
-    # basename = 'coupled_FoFo_375_CCEortho'
-    # mumart = 8188.68
-    # basename = 'coupled_FoFo_375_CCEpara'
-    # mumart = 35511.1
-    # csolubility = 5e-4
-    # tlist = [0.1, 1, 10, 100, 1000]
-
     dictloc = dict(ur='upper right', ul='upper left',
                    ll='lower left', lr='lower right',
                    best='best')
@@ -71,8 +55,7 @@ if __name__ == '__main__':
         save = True if len(save) > 0 else False
 
         directory, args = lookup_option('-dir', args, str, [])
-        directory = directory[-1] if len(
-            directory) > 0 else '/home/arthur/tese/img/cpartition/muprofiles/'
+        directory = directory[-1] if len(directory) > 0 else '/home/arthur/tese/img/cpartition/muprofiles/'
 
         # Plotting options
         xlim, args = lookup_option('-xlim', args, str, [])
@@ -115,14 +98,16 @@ if __name__ == '__main__':
                                          tlist=[t])
 
                 if tracking:
-                    cprofiles.plot_locus_interface([('aus1.sn', 'aus1.cin'),
+                    cprofiles.plot_locus_interface([('aus1.s0', 'aus1.ci0'),
+                                                    ('aus1.sn', 'aus1.cin'),
                                                     ('aus2.s0', 'aus2.ci0'),
                                                     ('aus2.sn', 'aus2.cin')],
                                                    ax=ax, mirror=True,
-                                                   func=lambda x: 1e-3*aust.x2mu['C'](x),
+                                                   func=lambda x: 1e-3 *
+                                                   aust.x2mu['C'](x),
                                                    color='k', ls=':', lw=1, label='')
             ax.set_xlim(*xlim)
-            ax.set_xlim(*ylim)
+            ax.set_ylim(*ylim)
 
             ax.set_xlabel(u'Posição (µm)')
             ax.set_ylabel(r'$\mu_C$ (kJ/mol)')
