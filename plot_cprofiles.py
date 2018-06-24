@@ -79,6 +79,23 @@ if __name__ == '__main__':
             every[-1]) if len(every) > 0 else (None, None, None)
 
         for basename in args:
+            if 'mart' in basename:
+                labels = [('aus1', r'$\gamma_1$', 1),
+                          ('aus2', r'$\gamma_2$', 1),
+                          ('aust', r'$\gamma$', 1),
+                          ('mart', r"$\alpha'$", 1)]
+                tracked_interfaces = []
+            else:
+                labels = [('aus1', r'$\gamma_1$', -1),
+                          ('aus2', r'$\gamma_2$', -1),
+                          ('aust', r'$\gamma$', -1),
+                          ('mart', r"$\alpha'$", -1),
+                          ('fer1', r'$\alpha_{b1}$', 1),
+                          ('fer2', r'$\alpha_{b2}$', 1)]
+                tracked_interfaces = [('aus1.sn', 'aus1.cin'),
+                                      ('aus2.s0', 'aus2.ci0'),
+                                      ('aus2.sn', 'aus2.cin')]
+
             try:
                 fig, ax = plt.subplots(figsize=figsize)
                 cprofiles = CProfiles(basename)
@@ -86,22 +103,21 @@ if __name__ == '__main__':
                                          tlist=tlist, mirror=mirror,
                                          func=lambda x: x2wp(x, y=y))
 
-                if tracking:
-                    cprofiles.plot_locus_interface([('aus1.sn', 'aus1.cin'),
-                                                    ('aus2.s0', 'aus2.ci0'),
-                                                    ('aus2.sn', 'aus2.cin')],
-                                                   ax=ax, color='k', ls='--', lw=1,
-                                                   func=lambda x: x2wp(x, y=y), label='')
             except:
-                raise
                 print('Failed to plot "{}"'.format(basename))
                 plt.close(fig)
             else:
+                ax.set_xlim(*xlim)
+                ax.set_ylim(*ylim)
                 ax.set_xlabel(u'Posição (μm)')
                 ax.set_ylabel('Teor de carbono (%)')
                 ax.legend(loc=loc, fancybox=False)
-                ax.set_xlim(*xlim)
-                ax.set_ylim(*ylim)
+
+                if tracking:
+                    cprofiles.plot_locus_interface(tracked_interfaces, ax=ax, mirror=mirror,
+                                                   color='k', ls='--', lw=.8,
+                                                   func=lambda x: x2wp(x, y=y), label='')
+
                 if log:
                     ax.set_yscale('log')
 
@@ -110,19 +126,14 @@ if __name__ == '__main__':
 
                 if label:
                     cprofiles.label_phases(ax=ax, t=tlist[-1],
-                                           labels=[('aus1', r'$\gamma_1$', 1),
-                                                   ('aus2', r'$\gamma_2$', 1),
-                                                   ('aust', r'$\gamma$', 1),
-                                                   ('mart', r"$\alpha'$", 1),
-                                                   ('fer1', r'$\alpha_{b1}$', 1),
-                                                   ('fer2', r'$\alpha_{b2}$', 1)],
+                                           labels=labels,
                                            mirror=mirror, size=12)
 
-            if save:
-                fname = os.path.join(
-                    directory, cprofiles.basename + suffix + ext)
-                plt.savefig(fname, bbox_inches='tight')
-                os.system('svg2pdf ' + fname)
+                if save:
+                    fname = os.path.join(
+                        directory, cprofiles.basename + suffix + ext)
+                    plt.savefig(fname, bbox_inches='tight')
+                    os.system('svg2pdf ' + fname)
 
         if show:
             plt.show()

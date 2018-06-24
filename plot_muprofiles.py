@@ -55,7 +55,8 @@ if __name__ == '__main__':
         save = True if len(save) > 0 else False
 
         directory, args = lookup_option('-dir', args, str, [])
-        directory = directory[-1] if len(directory) > 0 else '/home/arthur/tese/img/cpartition/muprofiles/'
+        directory = directory[-1] if len(
+            directory) > 0 else '/home/arthur/tese/img/cpartition/muprofiles/'
 
         # Plotting options
         xlim, args = lookup_option('-xlim', args, str, [])
@@ -71,6 +72,9 @@ if __name__ == '__main__':
         figsize = figsize if len(figsize) == 2 else (6, 4)
 
         # Options passed to cprofiles
+        label, args = lookup_option('-label', args, None, [])
+        label = True if len(label) > 0 else False
+
         tracking, args = lookup_option('-tracking', args, None, [])
         tracking = True if len(tracking) > 0 else False
 
@@ -84,18 +88,39 @@ if __name__ == '__main__':
         csolubility = csolubility[-1] if len(csolubility) > 0 else 5.4e-4
 
         for basename in args:
-            fig, ax = plt.subplots(figsize=figsize)
+            if 'mart' in basename:
+                labels = [('aus1', r'$\gamma_1$', 1),
+                          ('aus2', r'$\gamma_2$', 1),
+                          ('aust', r'$\gamma$', 1),
+                          ('mart', r"$\alpha'$", 1)]
+            else:
+                labels = [('aus1', r'$\gamma_1$', -1),
+                          ('aus2', r'$\gamma_2$', -1),
+                          ('aust', r'$\gamma$', -1),
+                          ('mart', r"$\alpha'$", -1),
+                          ('fer1', r'$\alpha_{b1}$', 1),
+                          ('fer2', r'$\alpha_{b2}$', 1)]
 
-            cprofiles = CProfiles(basename, 'C_profiles')
+            try:
+                fig, ax = plt.subplots(figsize=figsize)
+                cprofiles = CProfiles(basename, 'C_profiles')
 
-            for t in tlist:
-                j, = cprofiles.where_tlist([t], [])
+                for t in tlist:
+                    j, = cprofiles.where_tlist([t], [])
 
-                strct = cprofiles.ss[j]
-                cprofiles.plot_cprofiles(ax=ax, mirror=True,
-                                         func=lambda x: x2mu(
-                                             x, strct, mumart, csolubility),
-                                         tlist=[t])
+                    strct = cprofiles.ss[j]
+                    cprofiles.plot_cprofiles(ax=ax, mirror=True,
+                                             func=lambda x: x2mu(x, strct, mumart, csolubility),
+                                             tlist=[t])
+            except:
+                print('Failed to plot "{}"'.format(basename))
+                plt.close(fig)
+            else:
+                ax.set_xlim(*xlim)
+                ax.set_ylim(*ylim)
+                ax.set_xlabel(u'Posição (µm)')
+                ax.set_ylabel(r'$\mu_C$ (kJ/mol)')
+                ax.legend(fancybox=False)
 
                 if tracking:
                     cprofiles.plot_locus_interface([('aus1.s0', 'aus1.ci0'),
@@ -103,21 +128,20 @@ if __name__ == '__main__':
                                                     ('aus2.s0', 'aus2.ci0'),
                                                     ('aus2.sn', 'aus2.cin')],
                                                    ax=ax, mirror=True,
-                                                   func=lambda x: 1e-3 *
-                                                   aust.x2mu['C'](x),
-                                                   color='k', ls=':', lw=1, label='')
-            ax.set_xlim(*xlim)
-            ax.set_ylim(*ylim)
+                                                   func=lambda x: 1e-3*aust.x2mu['C'](x),
+                                                   color='k', ls=':', lw=.8, label='')
 
-            ax.set_xlabel(u'Posição (µm)')
-            ax.set_ylabel(r'$\mu_C$ (kJ/mol)')
-            ax.legend(fancybox=False)
+                if label:
+                    cprofiles.label_phases(ax=ax, t=tlist[-1],
+                                           labels=labels,
+                                           mirror=True, size=12)
 
-            if save:
-                fname = os.path.join(
-                    directory, cprofiles.basename + suffix + ext)
-                plt.savefig(fname, bbox_inches='tight')
-                os.system('svg2pdf ' + fname)
+
+                if save:
+                    fname = os.path.join(
+                        directory, cprofiles.basename + suffix + ext)
+                    plt.savefig(fname, bbox_inches='tight')
+                    os.system('svg2pdf ' + fname)
 
         if show:
             plt.show()

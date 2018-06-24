@@ -1,8 +1,9 @@
 if __name__ == '__main__':
     import sys
-    from cpartition import FCC, x2wp
 
     if len(sys.argv) > 0:
+        from cpartition import FCC, x2wp
+
         T_C = 375.
         c0 = 3.34414e-02
         y = dict(Cu=3.55354266E-3, Mn=2.05516602E-3,
