@@ -10,7 +10,7 @@ basename = os.path.basename(__file__).replace('.py', '')
 c0 = 3.34414e-02
 T_C = 375.
 
-control_itsteps = ControlIterationSteps([5e-5, 5e-4, 5e-3, 5e-2], [0, .2, 2, 20, 1000])
+control_itsteps = ControlIterationSteps([5e-5, 5e-4, 5e-3, 5e-2, 5e-1], [0, .2, 2, 20, 1e3, 1e4])
 total_time = control_itsteps.total_time
 n_time = control_itsteps.ntime
 dt = control_itsteps.dt

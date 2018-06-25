@@ -1,5 +1,5 @@
-mart_FoFo_CCEortho.log @ arthur-ltf
-2018-06-23T05:44:58
+mart_FoFo_CCEortho.log @ arthur-laptop
+2018-06-24T21:42:30
 
 c0 = 3.344140e-02 (approx 0.74 wt.%)
 T_C = 375.0 [oC]
@@ -257,5 +257,5 @@ intf: type_int = 1 (fixed.fluxes)
 48400: t=9800.000, cavg*=0.996448, r_mart=183.979, r_aust=0.565393
 48600: t=9900.000, cavg*=0.996448, r_mart=183.949, r_aust=0.564464
 48800: t=10000.000, cavg*=0.996448, r_mart=183.921, r_aust=0.563562
-Time elapsed: 63.38 s
+Time elapsed: 66.87 s
 

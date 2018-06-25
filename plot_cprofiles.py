@@ -125,7 +125,7 @@ if __name__ == '__main__':
                     ax.set_title(cprofiles.basename)
 
                 if label:
-                    cprofiles.label_phases(ax=ax, t=tlist[-1],
+                    cprofiles.label_phases(ax=ax, t=tlist[0],
                                            labels=labels,
                                            mirror=mirror, size=12)
 

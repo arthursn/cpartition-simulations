@@ -1,5 +1,5 @@
-mart_FoFo_mu30e3.log @ arthur-ltf
-2018-06-22T20:53:12
+mart_FoFo_mu30e3.log @ arthur-laptop
+2018-06-24T21:28:35
 
 c0 = 3.344140e-02 (approx 0.74 wt.%)
 T_C = 375.0 [oC]
@@ -167,5 +167,5 @@ intf: type_int = 1 (fixed.fluxes)
 30400: t=980.000, cavg*=1.04287, r_mart=163.29, r_aust=2.31127
 30600: t=990.000, cavg*=1.04287, r_mart=163.29, r_aust=2.31126
 30800: t=1000.000, cavg*=1.04287, r_mart=163.29, r_aust=2.31125
-Time elapsed: 61.62 s
+Time elapsed: 65.17 s
 

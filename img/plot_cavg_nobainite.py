@@ -43,7 +43,7 @@ ax.axhline(c0, ls=':', color='k', lw=1)
 ax.axhline(WBs, ls=':', color='k', lw=1)
 
 ax.set_xscale('log')
-ax.set_xlim(1e-2, 1000)
+ax.set_xlim(1e-2, 1e4)
 ax.set_ylim(0, 1.4)
 ax.set_xlabel('Tempo (s)')
 ax.set_ylabel(u'Carbono médio em ' + r"$\alpha' + \theta$ (%)")
