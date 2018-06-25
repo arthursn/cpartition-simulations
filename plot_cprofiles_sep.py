@@ -9,7 +9,7 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     from cpartition import FCC, BCC, Interface, WBs, CProfiles, x2wp
     from itertools import cycle
-    from parse_args import lookup_option, split_string
+    import argparse
 
     colorcycle = cycle(
         matplotlib.rcParams['axes.prop_cycle'].by_key()['color'])
@@ -26,134 +26,112 @@ if __name__ == '__main__':
     _, cwbs = intf.comp()
     cwbs = x2wp(cwbs, y=y)
 
-    args = sys.argv[1:]
+    parser = argparse.ArgumentParser()
+    parser.add_argument('basenames', nargs='*')
+    parser.add_argument('-s', '--show', action='store_true')
+    parser.add_argument('-S', '--save', action='store_true')
 
-    if len(args) > 1:
-        # Saving options
-        save, args = lookup_option('-save', args, None, [])
-        save = True if len(save) > 0 else False
+    parser.add_argument('-d', '--dir',
+                        default='/home/arthur/tese/img/cpartition/cprofiles')
+    parser.add_argument('-e', '--ext', default='.svg')
+    parser.add_argument('-a', '--append', default='')
+    parser.add_argument('-f', '--figsize', type=float, nargs=2, default=[6, 4])
 
-        directory, args = lookup_option('-dir', args, str, [])
-        directory = directory[-1] if len(directory) > 0 else '/home/arthur/tese/img/cpartition/cprofiles/'
+    parser.add_argument('-m', '--mirror', action='store_true')
+    parser.add_argument('-x', '--xlim', type=float,
+                        nargs=2, default=[None, None])
+    parser.add_argument('-y', '--ylim', type=float,
+                        nargs=2, default=[None, None])
 
-        suffix, args = lookup_option('-suffix', args, str, [])
-        suffix = suffix[-1] if len(suffix) > 0 else ''
+    parser.add_argument('-t', '--time', type=float, nargs='*', required=True)
+    parser.add_argument('-l', '--label', action='store_true')
+    parser.add_argument('-T', '--tracking', action='store_true')
+    parser.add_argument('-L', '--loc', default='best')
 
-        ext, args = lookup_option('-ext', args, str, [])
-        ext = '.' + ext[-1].strip('.') if len(ext) > 0 else '.svg'
+    parser.add_argument('--special', action='store_true')
+    parser.add_argument('--all', action='store_true')
+    parser.add_argument('--wbs', action='store_true')
 
-        # Plotting options
-        xlim, args = lookup_option('-xlim', args, str, [])
-        xlim = split_string(xlim[-1], float) if len(xlim) > 0 else (None, None)
+    args = parser.parse_args()
 
-        ylim, args = lookup_option('-ylim', args, str, [])
-        ylim = split_string(ylim[-1], float) if len(ylim) > 0 else (None, None)
+    if args.all:
+        args.time.append(args.time.copy())
 
-        show, args = lookup_option('-show', args, None, [])
-        show = True if len(show) > 0 else False
+    ncol = 2
+    nrow = int(np.ceil(len(args.time)/ncol))
 
-        figsize, args = lookup_option('-figsize', args, float, [], True)
-        figsize = figsize if len(figsize) == 2 else (6, 4)
+    for basename in args.basenames:
+        cprofiles = CProfiles(basename, 'C_profiles')
 
-        # Options passed to cprofiles
-        mirror, args = lookup_option('-mirror', args, None, [])
-        mirror = True if len(mirror) > 0 else False
+        if args.tracking:
+            pos = pd.read_table(
+                'pos_extremities/{}.txt'.format(cprofiles.basename), sep=' ')
+            ci = pd.read_table(
+                'C_extremities/{}.txt'.format(cprofiles.basename), sep=' ')
 
-        tracking, args = lookup_option('-tracking', args, None, [])
-        tracking = True if len(tracking) > 0 else False
+        fig, axes = plt.subplots(nrow, ncol, figsize=(4*ncol, 3*nrow))
+        # plt.subplots_adjust(wspace=.5, hspace=.5)
+        axes = axes.ravel()
 
-        tlist, args = lookup_option('-t', args, float, [], True)
-        tlist = sorted(tlist)
+        for i, (t, ax) in enumerate(zip(args.time, axes)):
+            kw = dict(lw=1)
+            if not isinstance(t, list):
+                t = [t]
+                kw['color'] = next(colorcycle)
 
-        # Special bois
-        mommysaysimspecial, args = lookup_option('-special', args, None, [])
-        mommysaysimspecial = True if len(mommysaysimspecial) > 0 else False
+            cprofiles.plot_cprofiles(ax=ax, mirror=True,
+                                     func=lambda x: x2wp(x, y=y),
+                                     tlist=t, **kw)
+            if i == 0:
+                j, = cprofiles.where_tlist(t, [])
+                idx, = np.where(cprofiles.ss[j] == 'aus1')
+                idx = idx[0]
+                zmax = 2*cprofiles.zz[j][-1] - cprofiles.zz[j][idx]
+                cmax = cprofiles.cc[j][idx]
 
-        wbs, args = lookup_option('-wbs', args, None, [])
-        wbs = True if len(wbs) > 0 else False
+            if args.tracking:
+                ax.plot(pos['aus1.sn'], x2wp(ci['aus1.cin'], y=y), 'k:')
 
-        miniall, args = lookup_option('-all', args, None, [])
-        miniall = True if len(miniall) > 0 else False
+            ax.set_ylim(*args.ylim)
+            ax.set_xlim(*args.xlim)
 
-        if miniall:
-            tlist.append(tlist.copy())
+            if len(t) == 1:
+                ax.text(.01, .85, s='{:g} s'.format(
+                    t[0]), transform=ax.transAxes)
 
-        ncol = 2
-        nrow = int(np.ceil(len(tlist)/ncol))
+                if args.wbs:
+                    ax.axhline(cwbs, color='k', ls='--', lw=.8)
+                    ax.text(1.1, cwbs + .1, s='WBs', ha='right')
 
-        for basename in args:
-            cprofiles = CProfiles(basename, 'C_profiles')
+                # special axis dimensions
+                if args.special:
+                    if i > 1:
+                        ax.set_ylim(-.1, 2.5)
+                    else:
+                        ax.set_ylim(-.1)
 
-            if tracking:
-                pos = pd.read_table(
-                    'pos_extremities/{}.txt'.format(cprofiles.basename), sep=' ')
-                ci = pd.read_table(
-                    'C_extremities/{}.txt'.format(cprofiles.basename), sep=' ')
+                cprofiles.label_phases(ax, t, mirror=True)
+            else:
+                ax.text(.01, .9, s='Todos', transform=ax.transAxes)
 
-            fig, axes = plt.subplots(nrow, ncol, figsize=(4*ncol, 3*nrow))
-            # plt.subplots_adjust(wspace=.5, hspace=.5)
-            axes = axes.ravel()
+            if i == len(axes) - ncol:
+                ax.set_xlabel(u'Posição (µm)')
+                ax.set_ylabel('Teor de carbono (% massa)')
 
-            for i, (t, ax) in enumerate(zip(tlist, axes)):
-                kw = dict(lw=1)
-                if not isinstance(t, list):
-                    t = [t]
-                    kw['color'] = next(colorcycle)
+        for ax in axes[i+1:]:
+            ax.set_axis_off()
 
-                cprofiles.plot_cprofiles(ax=ax, mirror=True,
-                                         func=lambda x: x2wp(x, y=y),
-                                         tlist=t, **kw)
-                if i == 0:
-                    j, = cprofiles.where_tlist(t, [])
-                    idx, = np.where(cprofiles.ss[j] == 'aus1')
-                    idx = idx[0]
-                    zmax = 2*cprofiles.zz[j][-1] - cprofiles.zz[j][idx]
-                    cmax = cprofiles.cc[j][idx]
+        ax = axes[0]
+        cmax = x2wp(cmax, y=y)
+        ax.annotate(s='{:.2f} %'.format(cmax), xy=(zmax, cmax),
+                    xytext=(12, -10), textcoords='offset points', ha='left',
+                    arrowprops=dict(arrowstyle='->'))
 
-                if tracking:
-                    ax.plot(pos['aus1.sn'], x2wp(ci['aus1.cin'], y=y), 'k:')
+        if args.save:
+            fname = os.path.join(args.dir, cprofiles.basename + '_sep.svg')
+            fig.savefig(fname, bbox_inches='tight')
+            os.system('svg2pdf ' + fname)
 
-                ax.set_ylim(*ylim)
-                ax.set_xlim(*xlim)
-
-                if len(t) == 1:
-                    ax.text(.01, .85, s='{:g} s'.format(t[0]), transform=ax.transAxes)
-
-                    
-                    if wbs:
-                        ax.axhline(cwbs, color='k', ls='--', lw=.8)
-                        ax.text(1.1, cwbs + .1, s='WBs', ha='right')
-
-                    # special axis dimensions
-                    if mommysaysimspecial:
-                        if i > 1:
-                            ax.set_ylim(-.1, 2.5)
-                        else:
-                            ax.set_ylim(-.1)
-                    
-                    cprofiles.label_phases(ax, t, mirror=True)
-                else:
-                    ax.text(.01, .9, s='Todos', transform=ax.transAxes)
-
-                if i == len(axes) - ncol:
-                    ax.set_xlabel(u'Posição (µm)')
-                    ax.set_ylabel('Teor de carbono (% massa)')
-
-            for ax in axes[i+1:]:
-                ax.set_axis_off()
-
-            ax = axes[0]
-            cmax = x2wp(cmax, y=y)
-            ax.annotate(s='{:.2f} %'.format(cmax), xy=(zmax, cmax),
-                        xytext=(12, -10), textcoords='offset points', ha='left',
-                        arrowprops=dict(arrowstyle='->'))
-
-            if save:
-                fname = os.path.join(
-                    directory, cprofiles.basename + '_sep.svg')
-                fig.savefig(fname, bbox_inches='tight')
-                os.system('svg2pdf ' + fname)
-
-        if show:
-            plt.show()
-        # plt.close()
+    if args.show:
+        plt.show()
+    # plt.close()

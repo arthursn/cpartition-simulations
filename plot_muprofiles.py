@@ -8,7 +8,7 @@ if __name__ == '__main__':
     from matplotlib import rcParams
     import matplotlib.pyplot as plt
     from cpartition import FCC, BCC, Interface, WBs, CProfiles, x2wp
-    from parse_args import lookup_option, split_string
+    import argparse
 
     rcParams.update({'font.family': 'sans-serif',
                      'font.sans-serif': 'Arial',
@@ -47,105 +47,94 @@ if __name__ == '__main__':
                    ll='lower left', lr='lower right',
                    best='best')
 
-    args = sys.argv[1:]
+    parser = argparse.ArgumentParser()
+    parser.add_argument('basenames', nargs='*')
+    parser.add_argument('-s', '--show', action='store_true')
+    parser.add_argument('-S', '--save', action='store_true')
 
-    if len(args) > 0:
-        # Saving options
-        save, args = lookup_option('-save', args, None, [])
-        save = True if len(save) > 0 else False
+    parser.add_argument('-d', '--dir',
+                        default='/home/arthur/tese/img/cpartition/cprofiles')
+    parser.add_argument('-e', '--ext', default='.svg')
+    parser.add_argument('-a', '--append', default='')
+    parser.add_argument('-f', '--figsize', type=float, nargs=2, default=[6, 4])
 
-        directory, args = lookup_option('-dir', args, str, [])
-        directory = directory[-1] if len(
-            directory) > 0 else '/home/arthur/tese/img/cpartition/muprofiles/'
+    parser.add_argument('-m', '--mirror', action='store_true')
+    parser.add_argument('-x', '--xlim', type=float,
+                        nargs=2, default=[None, None])
+    parser.add_argument('-y', '--ylim', type=float,
+                        nargs=2, default=[None, None])
 
-        # Plotting options
-        xlim, args = lookup_option('-xlim', args, str, [])
-        xlim = split_string(xlim[-1], float) if len(xlim) > 0 else (None, None)
+    parser.add_argument('-t', '--time', type=float, nargs='*', required=True)
+    parser.add_argument('-l', '--label', action='store_true')
+    parser.add_argument('-T', '--tracking', action='store_true')
+    parser.add_argument('-L', '--loc', default='best')
 
-        ylim, args = lookup_option('-ylim', args, str, [])
-        ylim = split_string(ylim[-1], float) if len(ylim) > 0 else (None, None)
+    parser.add_argument('-M', '--mu', type=float, default=None)
+    parser.add_argument('-c', '--sol', type=float, default=5.4e-4)
 
-        show, args = lookup_option('-show', args, None, [])
-        show = True if len(show) > 0 else False
+    args = parser.parse_args()
 
-        figsize, args = lookup_option('-figsize', args, float, [], True)
-        figsize = figsize if len(figsize) == 2 else (6, 4)
-
-        # Options passed to cprofiles
-        label, args = lookup_option('-label', args, None, [])
-        label = True if len(label) > 0 else False
-
-        tracking, args = lookup_option('-tracking', args, None, [])
-        tracking = True if len(tracking) > 0 else False
-
-        tlist, args = lookup_option('-t', args, float, [], True)
-        tlist = sorted(tlist)
-
-        mumart, args = lookup_option('-mu', args, float, [])
-        mumart = mumart[-1] if len(mumart) > 0 else None
-
-        csolubility, args = lookup_option('-sol', args, float, [])
-        csolubility = csolubility[-1] if len(csolubility) > 0 else 5.4e-4
-
-        for basename in args:
-            if 'mart' in basename:
-                labels = [('aus1', r'$\gamma_1$', 1),
-                          ('aus2', r'$\gamma_2$', 1),
-                          ('aust', r'$\gamma$', 1),
-                          ('mart', r"$\alpha'$", 1)]
-            else:
-                labels = [('aus1', r'$\gamma_1$', -1),
-                          ('aus2', r'$\gamma_2$', -1),
-                          ('aust', r'$\gamma$', -1),
-                          ('mart', r"$\alpha'$", -1),
-                          ('fer1', r'$\alpha_{b1}$', 1),
-                          ('fer2', r'$\alpha_{b2}$', 1)]
-
-            try:
-                fig, ax = plt.subplots(figsize=figsize)
-                cprofiles = CProfiles(basename, 'C_profiles')
-
-                for t in tlist:
-                    j, = cprofiles.where_tlist([t], [])
-
-                    strct = cprofiles.ss[j]
-                    cprofiles.plot_cprofiles(ax=ax, mirror=True,
-                                             func=lambda x: x2mu(x, strct, mumart, csolubility),
-                                             tlist=[t])
-            except:
-                print('Failed to plot "{}"'.format(basename))
-                plt.close(fig)
-            else:
-                ax.set_xlim(*xlim)
-                ax.set_ylim(*ylim)
-                ax.set_xlabel(u'Posição (µm)')
-                ax.set_ylabel(r'$\mu_C$ (kJ/mol)')
-                ax.legend(fancybox=False)
-
-                if tracking:
-                    cprofiles.plot_locus_interface([('aus1.s0', 'aus1.ci0'),
-                                                    ('aus1.sn', 'aus1.cin'),
-                                                    ('aus2.s0', 'aus2.ci0'),
-                                                    ('aus2.sn', 'aus2.cin')],
-                                                   ax=ax, mirror=True,
-                                                   func=lambda x: 1e-3*aust.x2mu['C'](x),
-                                                   color='k', ls=':', lw=.8, label='')
-
-                if label:
-                    cprofiles.label_phases(ax=ax, t=tlist[-1],
-                                           labels=labels,
-                                           mirror=True, size=12)
-
-
-                if save:
-                    fname = os.path.join(
-                        directory, cprofiles.basename + suffix + ext)
-                    plt.savefig(fname, bbox_inches='tight')
-                    os.system('svg2pdf ' + fname)
-
-        if show:
-            plt.show()
+    for basename in args.basenames:
+        if 'mart' in basename:
+            labels = [('aus1', r'$\gamma_1$', 1),
+                      ('aus2', r'$\gamma_2$', 1),
+                      ('aust', r'$\gamma$', 1),
+                      ('mart', r"$\alpha'$", 1)]
         else:
-            plt.close('all')
+            labels = [('aus1', r'$\gamma_1$', -1),
+                      ('aus2', r'$\gamma_2$', -1),
+                      ('aust', r'$\gamma$', -1),
+                      ('mart', r"$\alpha'$", -1),
+                      ('fer1', r'$\alpha_{b1}$', 1),
+                      ('fer2', r'$\alpha_{b2}$', 1)]
+
+        try:
+            fig, ax = plt.subplots(figsize=args.figsize)
+            cprofiles = CProfiles(basename, 'C_profiles')
+
+            for t in args.time:
+                j, = cprofiles.where_tlist([t], [])
+
+                strct = cprofiles.ss[j]
+                cprofiles.plot_cprofiles(ax=ax, mirror=args.mirror,
+                                         func=lambda x: x2mu(
+                                             x, strct, args.mu,
+                                             args.sol),
+                                         tlist=[t])
+        except:
+            print('Failed to plot "{}"'.format(basename))
+            plt.close()
+        else:
+            ax.set_xlim(args.xlim)
+            ax.set_ylim(args.ylim)
+            ax.set_xlabel(u'Posição (µm)')
+            ax.set_ylabel(r'$\mu_C$ (kJ/mol)')
+            ax.legend(loc=dictloc[args.loc], fancybox=False)
+
+            if args.tracking:
+                cprofiles.plot_locus_interface([('aus1.s0', 'aus1.ci0'),
+                                                ('aus1.sn', 'aus1.cin'),
+                                                ('aus2.s0', 'aus2.ci0'),
+                                                ('aus2.sn', 'aus2.cin')],
+                                               ax=ax, mirror=args.mirror,
+                                               func=lambda x: 1e-3 *
+                                               aust.x2mu['C'](x),
+                                               color='k', ls=':',
+                                               lw=.8, label='')
+
+            if args.label:
+                cprofiles.label_phases(ax=ax, t=args.time[-1],
+                                       labels=labels,
+                                       mirror=args.mirror, size=12)
+
+            if args.save:
+                fname = os.path.join(args.dir,
+                                     cprofiles.basename +
+                                     args.append + args.ext)
+                plt.savefig(fname, bbox_inches='tight')
+                os.system('svg2pdf ' + fname)
+
+    if args.show:
+        plt.show()
     else:
-        print('Nothing to plot')
+        plt.close('all')

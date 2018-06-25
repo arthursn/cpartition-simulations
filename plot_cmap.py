@@ -33,14 +33,6 @@ if __name__ == '__main__':
                                          vmin=0, vmax=1.8)
             ax.set_xlabel(u'Position (μm)')
             ax.set_ylabel('Time (s)')
-
-            # ax = cprofiles.plot_cprofiles(each=100, mirror=True,
-            #                              func=lambda x: x2wp(x, y=y),
-            #                              vmin=0, vmax=1.8)
-            # ax.set_xlabel(u'Position (μm)')
-            # ax.set_ylabel('Carbon content (wt.%)')
-            # ax.legend()
-
             ax.set_title(cprofiles.basename)
 
             if save:
