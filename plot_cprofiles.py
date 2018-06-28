@@ -23,8 +23,8 @@ if __name__ == '__main__':
                    best='best')
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('basenames', nargs='*')
-    parser.add_argument('-s', '--show', action='store_true')
+    parser.add_argument('basenames', nargs='+')
+    parser.add_argument('-s', '--silent', action='store_false')
     parser.add_argument('-S', '--save', action='store_true')
 
     parser.add_argument('-d', '--dir',
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     parser.add_argument('-x', '--xlim', type=float, nargs=2, default=[None, None])
     parser.add_argument('-y', '--ylim', type=float, nargs=2, default=[None, None])
 
-    parser.add_argument('-t', '--time', type=float, nargs='*', required=True)
+    parser.add_argument('-t', '--time', type=float, nargs='+', required=True)
     parser.add_argument('-l', '--label', action='store_true')
     parser.add_argument('-T', '--tracking', action='store_true')
     parser.add_argument('-L', '--loc', default='best')
@@ -96,7 +96,7 @@ if __name__ == '__main__':
                 plt.savefig(fname, bbox_inches='tight')
                 os.system('svg2pdf ' + fname)
 
-    if args.show:
+    if args.silent:
         plt.show()
     else:
         plt.close('all')
