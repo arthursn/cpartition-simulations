@@ -68,7 +68,10 @@ if __name__ == '__main__':
 
     args = sys.argv[1:]
     if len(args) > 0:
-        plot_cavg(files=args, labels=args)
+        y = dict(Cu=3.55354266E-3, Mn=2.05516602E-3,
+                 Si=5.02504411E-2, Fe=9.4414085022e-1)
+
+        plot_cavg(files=args, labels=args, y=y)
         plt.show()
     else:
         print('Nothing to plot')
