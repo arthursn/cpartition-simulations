@@ -32,7 +32,7 @@ tf = pos['t'].values[-1]
 # Ploting interface position and composition
 
 # Setting pre-plot parameters
-fig1, ax1 = plt.subplots(figsize=(4, 4))
+fig1, ax1 = plt.subplots(figsize=(3.5, 3.5))
 
 # composition
 ax1.plot(cint['t'], x2wp(cint['aus1.cin'], y=y),
@@ -51,7 +51,7 @@ ax2.plot(pos['t'], pos['aus1.sn'], 'k--', label=u'Posição da interface')
 
 ax2.set_xlim(1e-1, tf)
 ax2.set_xscale('log')
-ax2.set_ylim(posf - .15, posf + .15)
+ax2.set_ylim(posf - .16, posf + .16)
 ax2.set_ylabel(u'Posição da interface (μm)')
 ax2.invert_yaxis()
 
@@ -61,7 +61,7 @@ ax2.legend(loc='upper right', fancybox=False)
 
 # Ploting driving force
 
-fig3, ax3 = plt.subplots(figsize=(4, 4))
+fig3, ax3 = plt.subplots(figsize=(3.5, 3.5))
 
 ax3.plot(cint['t'], DF, 'k-', label="Força motriz")
 ax3.set_xlim(1e-1, tf)
