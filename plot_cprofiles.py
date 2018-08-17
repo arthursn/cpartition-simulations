@@ -34,8 +34,10 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--figsize', type=float, nargs=2, default=[6, 4])
 
     parser.add_argument('-m', '--mirror', action='store_true')
-    parser.add_argument('-x', '--xlim', type=float, nargs=2, default=[None, None])
-    parser.add_argument('-y', '--ylim', type=float, nargs=2, default=[None, None])
+    parser.add_argument('-x', '--xlim', type=float,
+                        nargs=2, default=[None, None])
+    parser.add_argument('-y', '--ylim', type=float,
+                        nargs=2, default=[None, None])
 
     parser.add_argument('-t', '--time', type=float, nargs='+', required=True)
     parser.add_argument('-l', '--label', action='store_true')
@@ -48,16 +50,26 @@ if __name__ == '__main__':
         if 'mart' in basename:
             labels = [('aus1', r'$\gamma_1$', 1),
                       ('aus2', r'$\gamma_2$', 1),
-                      ('aust', r'$\gamma$', 1),
-                      ('mart', r"$\alpha'$", 1)]
+                      ('aust', r'$\gamma$', 1)]
+
+            if 'CCEpara' in basename or 'CCEortho' in basename or 'mu' in basename:
+                labels += [('mart', r"$\alpha' + \theta$", 1)]
+            else:
+                labels += [('mart', r"$\alpha'$", 1)]
+
             tracked_interfaces = []
         else:
             labels = [('aus1', r'$\gamma_1$', -1),
                       ('aus2', r'$\gamma_2$', -1),
                       ('aust', r'$\gamma$', -1),
-                      ('mart', r"$\alpha'$", -1),
                       ('fer1', r'$\alpha_{b1}$', 1),
                       ('fer2', r'$\alpha_{b2}$', 1)]
+
+            if 'CCEpara' in basename or 'CCEortho' in basename or 'mu' in basename:
+                labels += [('mart', r"$\alpha' + \theta$", -1)]
+            else:
+                labels += [('mart', r"$\alpha'$", -1)]
+
             tracked_interfaces = [('aus1.sn', 'aus1.cin'),
                                   ('aus2.s0', 'aus2.ci0'),
                                   ('aus2.sn', 'aus2.cin')]

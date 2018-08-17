@@ -61,6 +61,27 @@ if __name__ == '__main__':
     nrow = int(np.ceil(len(args.time)/ncol))
 
     for basename in args.basenames:
+        if 'mart' in basename:
+            labels = [('aus1', r'$\gamma_1$', 1),
+                      ('aus2', r'$\gamma_2$', 1),
+                      ('aust', r'$\gamma$', 1)]
+
+            if 'CCEpara' in basename or 'CCEortho' in basename or 'mu' in basename:
+                labels += [('mart', r"$\alpha' + \theta$", 1)]
+            else:
+                labels += [('mart', r"$\alpha'$", 1)]
+        else:
+            labels = [('aus1', r'$\gamma_1$', -1),
+                      ('aus2', r'$\gamma_2$', -1),
+                      ('aust', r'$\gamma$', -1),
+                      ('fer1', r'$\alpha_{b1}$', 1),
+                      ('fer2', r'$\alpha_{b2}$', 1)]
+
+            if 'CCEpara' in basename or 'CCEortho' in basename or 'mu' in basename:
+                labels += [('mart', r"$\alpha' + \theta$", -1)]
+            else:
+                labels += [('mart', r"$\alpha'$", -1)]
+
         cprofiles = CProfiles(basename, 'C_profiles')
 
         if args.tracking:
@@ -96,8 +117,8 @@ if __name__ == '__main__':
             ax.set_xlim(*args.xlim)
 
             if len(t) == 1:
-                ax.text(.01, .85, s='{:g} s'.format(
-                    t[0]), transform=ax.transAxes)
+                ax.text(.01, .85, s='{:g} s'.format(t[0]),
+                        weight='bold', transform=ax.transAxes)
 
                 if args.wbs:
                     ax.axhline(cwbs, color='k', ls='--', lw=.8)
@@ -110,9 +131,10 @@ if __name__ == '__main__':
                     else:
                         ax.set_ylim(-.1)
 
-                cprofiles.label_phases(ax, t, mirror=True)
+                cprofiles.label_phases(ax, t, labels=labels, mirror=True)
             else:
-                ax.text(.01, .9, s='Todos', transform=ax.transAxes)
+                ax.text(.01, .85, s='Todos',
+                        weight='bold', transform=ax.transAxes)
 
             if i == len(axes) - ncol:
                 ax.set_xlabel(u'Posição (µm)')
