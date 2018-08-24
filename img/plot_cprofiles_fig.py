@@ -50,7 +50,9 @@ if __name__ == '__main__':
     ax1.text(.98, .98, r"$\alpha'-\theta$" + ' ortho',
              ha='right', va='top', transform=ax1.transAxes)
     add_label(ax1, 'a)', py=0)
-    ax1.legend(loc='lower right', fancybox=False)
+    ax1.set_xlabel(u'Position (μm)')
+    ax1.set_ylabel('Carbon content (wt.%)')
+    ax1.legend(loc='upper left', fancybox=False)
 
     ############
     p2 = CProfiles('coupled_FoFo_375_CCEpara', '../C_profiles')
@@ -61,11 +63,13 @@ if __name__ == '__main__':
                       mirror=True, lw=1)
 
     ax2.set_xlim(-1.16, 1.16)
-    ax2.set_ylim(-.05, 4.1)
+    ax2.set_ylim(-.05, 4.2)
     ax2.text(.98, .98, r"$\alpha'-\theta$" + ' para',
              ha='right', va='top', transform=ax2.transAxes)
     add_label(ax2, 'b)', py=0)
-    ax2.legend(loc='lower right', fancybox=False)
+    ax2.set_xlabel(u'Position (μm)')
+    ax2.set_ylabel('Carbon content (wt.%)')
+    ax2.legend(loc='upper left', fancybox=False)
 
     ############
     p3 = CProfiles('coupled_FoFo_375_mu23e3', '../C_profiles')
@@ -80,12 +84,13 @@ if __name__ == '__main__':
     ax3.text(.98, .98, r"$\mu_C=$" + '23.2 kJ/mol' + r' ($c^\gamma_{int}$ = WBs)',
              ha='right', va='top', transform=ax3.transAxes)
     add_label(ax3, 'c)', py=0)
-    ax3.legend(loc='lower right', fancybox=False)
+    ax3.set_xlabel(u'Position (μm)')
+    ax3.set_ylabel('Carbon content (wt.%)')
+    ax3.legend(loc='upper left', fancybox=False)
 
-    
     """
     Plot average C composition
-    """ 
+    """
 
     files = ['../C_avg/coupled_FoFo_375_CCEortho.txt',
              '../C_avg/coupled_FoFo_375_mu20e3.txt',
@@ -102,9 +107,11 @@ if __name__ == '__main__':
     ax4.axhline(c0, ls=':', color='k', lw=1)
     ax4.axhline(WBs, ls=':', color='k', lw=1)
     add_label(ax4, 'd)', py=0)
+    ax4.legend(loc='lower right', fancybox=False)
 
-    fout = 'cpartition.pdf'
+    fout = 'cpartition.svg'
     fig.savefig(fout, bbox_inches='tight')
+    os.system('svg2pdf {}'.format(fout))
 
     plt.show()
     plt.close('all')
