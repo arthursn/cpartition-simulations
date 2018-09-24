@@ -24,25 +24,37 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('basenames', nargs='+')
-    parser.add_argument('-s', '--silent', action='store_false')
-    parser.add_argument('-S', '--save', action='store_true')
+    parser.add_argument('-s', '--silent', action='store_false',
+                        help='Silent. If used, does not show plot')
+    parser.add_argument('-S', '--save', action='store_true',
+                        help='Save plot')
 
-    parser.add_argument('-d', '--dir',
-                        default='/home/arthur/tese/img/cpartition/cprofiles')
-    parser.add_argument('-e', '--ext', default='.svg')
-    parser.add_argument('-a', '--append', default='')
-    parser.add_argument('-f', '--figsize', type=float, nargs=2, default=[6, 4])
+    parser.add_argument('-d', '--dir', default='.',
+                        help='Directory for saving plot')
+    parser.add_argument('-e', '--ext', default='.svg',
+                        help='Figure extension when saving plot')
+    parser.add_argument('-a', '--append', default='',
+                        help='Sufix appended to output filename when saving figure')
+    parser.add_argument('-f', '--figsize', type=float, nargs=2, default=[6, 4],
+                        help='Figure size')
 
-    parser.add_argument('-m', '--mirror', action='store_true')
+    parser.add_argument('-m', '--mirror', action='store_true',
+                        help='Mirror C profiles')
     parser.add_argument('-x', '--xlim', type=float,
-                        nargs=2, default=[None, None])
+                        nargs=2, default=[None, None],
+                        help='x-axis limits')
     parser.add_argument('-y', '--ylim', type=float,
-                        nargs=2, default=[None, None])
+                        nargs=2, default=[None, None],
+                        help='y-axis limits')
 
-    parser.add_argument('-t', '--time', type=float, nargs='+', required=True)
-    parser.add_argument('-l', '--label', action='store_true')
-    parser.add_argument('-T', '--tracking', action='store_true')
-    parser.add_argument('-L', '--loc', default='best')
+    parser.add_argument('-t', '--time', type=float, nargs='+', required=True,
+                        help='Required. Times to be plotted in seconds')
+    parser.add_argument('-l', '--label', action='store_true',
+                        help='If used, add label correspondign to phase regions')
+    parser.add_argument('-T', '--tracking', action='store_true',
+                        help='If used, plot tracked locus "carbon in interface x interface position"')
+    parser.add_argument('-L', '--loc', default='best',
+                        help='Legend location')
 
     args = parser.parse_args()
 
