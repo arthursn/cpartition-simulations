@@ -106,11 +106,13 @@ if __name__ == '__main__':
                                      func=lambda x: x2wp(x, y=y),
                                      tlist=t, **kw)
             if i == 0:
-                j, = cprofiles.where_tlist(t, [])
-                idx, = np.where(cprofiles.ss[j] == 'aus1')
-                idx = idx[0]
-                zmax = 2*cprofiles.zz[j][-1] - cprofiles.zz[j][idx]
-                cmax = cprofiles.cc[j][idx]
+                j = cprofiles.where_tlist(t, [])
+                if len(j) > 0:
+                    j = j[0]
+                    idx, = np.where(cprofiles.ss[j] == 'aus1')
+                    idx = idx[0]
+                    zmax = 2*cprofiles.zz[j][-1] - cprofiles.zz[j][idx]
+                    cmax = cprofiles.cc[j][idx]
 
             if args.tracking:
                 ax.plot(pos['aus1.sn'], x2wp(ci['aus1.cin'], y=y), 'k:')

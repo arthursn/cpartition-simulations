@@ -55,7 +55,7 @@ if __name__ == '__main__':
     parser.add_argument('-S', '--save', action='store_true')
 
     parser.add_argument('-d', '--dir',
-                        default='/home/arthur/tese/img/cpartition/cprofiles')
+                        default='')
     parser.add_argument('-e', '--ext', default='.svg')
     parser.add_argument('-a', '--append', default='')
     parser.add_argument('-f', '--figsize', type=float, nargs=2, default=[6, 4])
@@ -80,29 +80,40 @@ if __name__ == '__main__':
         if 'mart' in basename:
             labels = [('aus1', r'$\gamma_1$', 1),
                       ('aus2', r'$\gamma_2$', 1),
-                      ('aust', r'$\gamma$', 1),
-                      ('mart', r"$\alpha'$", 1)]
+                      ('aust', r'$\gamma$', 1)]
+
+            if 'CCEpara' in basename or 'CCEortho' in basename or 'mu' in basename:
+                labels += [('mart', r"$\alpha' + \theta$", 1)]
+            else:
+                labels += [('mart', r"$\alpha'$", 1)]
         else:
             labels = [('aus1', r'$\gamma_1$', -1),
                       ('aus2', r'$\gamma_2$', -1),
                       ('aust', r'$\gamma$', -1),
-                      ('mart', r"$\alpha'$", -1),
                       ('fer1', r'$\alpha_{b1}$', 1),
                       ('fer2', r'$\alpha_{b2}$', 1)]
+
+            if 'CCEpara' in basename or 'CCEortho' in basename or 'mu' in basename:
+                labels += [('mart', r"$\alpha' + \theta$", -1)]
+            else:
+                labels += [('mart', r"$\alpha'$", -1)]
 
         try:
             fig, ax = plt.subplots(figsize=args.figsize)
             cprofiles = CProfiles(basename, 'C_profiles')
 
+            last_t = None
             for t in args.time:
-                j, = cprofiles.where_tlist([t], [])
-
-                strct = cprofiles.ss[j]
-                cprofiles.plot_cprofiles(ax=ax, mirror=args.mirror,
-                                         func=lambda x: x2mu(
-                                             x, strct, args.mu,
-                                             args.sol),
-                                         tlist=[t])
+                j = cprofiles.where_tlist([t], [])
+                if len(j) > 0:
+                    j = j[0]
+                    strct = cprofiles.ss[j]
+                    cprofiles.plot_cprofiles(ax=ax, mirror=args.mirror,
+                                             func=lambda x: x2mu(
+                                                 x, strct, args.mu,
+                                                 args.sol),
+                                             tlist=[t])
+                    last_t = t
         except:
             print('Failed to plot "{}"'.format(basename))
             plt.close()
@@ -125,9 +136,10 @@ if __name__ == '__main__':
                                                lw=.8, label='')
 
             if args.label:
-                cprofiles.label_phases(ax=ax, t=args.time[-1],
-                                       labels=labels,
-                                       mirror=args.mirror, size=12)
+                if last_t is not None:
+                    cprofiles.label_phases(ax=ax, t=last_t,
+                                           labels=labels,
+                                           mirror=args.mirror, size=12)
 
             if args.save:
                 fname = os.path.join(args.dir,
