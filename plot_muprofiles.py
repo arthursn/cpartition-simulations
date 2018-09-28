@@ -54,8 +54,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--silent', action='store_false')
     parser.add_argument('-S', '--save', action='store_true')
 
-    parser.add_argument('-d', '--dir',
-                        default='')
+    parser.add_argument('-d', '--dir', default='')
     parser.add_argument('-e', '--ext', default='.svg')
     parser.add_argument('-a', '--append', default='')
     parser.add_argument('-f', '--figsize', type=float, nargs=2, default=[6, 4])
