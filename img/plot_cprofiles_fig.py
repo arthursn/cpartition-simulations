@@ -100,7 +100,7 @@ if __name__ == '__main__':
 
     ax3.set_xlim(-1.16, 1.16)
     ax3.set_ylim(-.02, 1.9)
-    ax3.text(.95, .95, r"$\mu_C=$" + '23.2 kJ/mol' + r' ($c^\gamma_{int}$ = WBs)',
+    ax3.text(.95, .95, r"$\mu_C=$" + '23.2 kJ/mol' + r" ($c^{\gamma/\alpha'+\theta}$ = WBs)",
              ha='right', va='top', size=10,
              transform=ax3.transAxes,
              backgroundcolor='white')
