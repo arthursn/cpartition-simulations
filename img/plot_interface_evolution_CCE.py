@@ -12,8 +12,8 @@ T_C = 375
 y = dict(Cu=3.55354266E-3, Mn=2.05516602E-3,
          Si=5.02504411E-2, Fe=9.4414085022e-1)
 
-cint = pd.read_table('../C_extremities/coupled_FoFo_375_CCE.txt', sep=' ')
-pos = pd.read_table('../pos_extremities/coupled_FoFo_375_CCE.txt', sep=' ')
+cint = pd.read_csv('../C_extremities/coupled_FoFo_375_CCE.txt', sep=' ')
+pos = pd.read_csv('../pos_extremities/coupled_FoFo_375_CCE.txt', sep=' ')
 
 # For calculating WBs
 aust = FCC(T_C=T_C, tdata='../thermo/FoFo/TCFE8/375-fcc.txt')

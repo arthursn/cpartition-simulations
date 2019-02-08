@@ -87,9 +87,9 @@ if __name__ == '__main__':
         cprofiles = CProfiles(basename, 'C_profiles')
 
         if args.tracking:
-            pos = pd.read_table(
+            pos = pd.read_csv(
                 'pos_extremities/{}.txt'.format(cprofiles.basename), sep=' ')
-            ci = pd.read_table(
+            ci = pd.read_csv(
                 'C_extremities/{}.txt'.format(cprofiles.basename), sep=' ')
 
         fig, axes = plt.subplots(nrow, ncol, figsize=(4*ncol, 3*nrow))

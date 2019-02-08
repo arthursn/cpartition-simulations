@@ -12,7 +12,7 @@ rcParams.update({'font.family': 'sans-serif',
                  'font.size': 13})
 
 fname = '../C_avg/mart_FoFo_CCE.txt'
-df = pd.read_table(fname, sep=' ')
+df = pd.read_csv(fname, sep=' ')
 
 y = dict(Cu=3.55354266E-3, Mn=2.05516602E-3,
          Si=5.02504411E-2, Fe=9.4414085022e-1)

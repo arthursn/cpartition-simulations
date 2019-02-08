@@ -29,7 +29,7 @@ def plot_cavg(files, labels=None, styles=None, ax=None,
     y = kwargs.pop('y', None)
 
     for fname in files:
-        df = pd.read_table(fname, sep=' ')
+        df = pd.read_csv(fname, sep=' ')
 
         args = []
         if labels:
