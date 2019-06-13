@@ -46,7 +46,7 @@ log = SimulationLog(basename)
 log.set_domains([('mart', mart), ('aus1', aus1),
                  ('fer1', fer1), ('aus2', aus2), ('fer2', fer2)])
 log.set_interfaces([('int1', int1), ('int2', int2),
-                    ('int4', int4), ('int4', int4)])
+                    ('int3', int3), ('int4', int4)])
 log.set_conditions(c0, T_C, total_time, n_time)
 log.initialize(False)
 

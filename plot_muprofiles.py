@@ -37,7 +37,7 @@ if __name__ == '__main__':
         else:
             mu[sel] = mart.x2mu['C'](c[sel])
 
-        sel = (strct == 'fer1') | (strct == 'fer2')
+        sel = (strct == 'fer1') | (strct == 'fer2') | (strct == 'fer3')
         mu[sel] = ferr.x2mu['C'](c[sel])
 
         sel = (strct == 'aus1') | (strct == 'aus2') | (strct == 'aust')

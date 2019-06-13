@@ -50,7 +50,7 @@ log = SimulationLog(basename)
 log.set_domains([('mart', mart), ('aus1', aus1),
                  ('fer1', fer1), ('aus2', aus2), ('fer2', fer2)])
 log.set_interfaces([('int1', int1), ('int2', int2),
-                    ('int4', int4), ('int4', int4)])
+                    ('int3', int3), ('int4', int4)])
 log.set_conditions(c0, T_C, total_time, n_time)
 log.initialize(False)
 
@@ -82,7 +82,7 @@ for i in control_itsteps.itlist:
                       bcn=(1, 0, 0, int2.ci_fcc))
     fer1.c[:] = np.linspace(int2.ci_bcc, int3.ci_bcc, fer1.n)
     aus2.FDM_implicit(bc0=(1, 0, 0, int3.ci_fcc),
-                      bcn=(1, 0, 0, int3.ci_fcc))
+                      bcn=(1, 0, 0, int4.ci_fcc))
     fer2.c[:] = int4.ci_bcc
 
     # update position of interfaces and interpolate compositions
