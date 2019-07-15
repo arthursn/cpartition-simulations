@@ -13,8 +13,8 @@ def x2vcem(x):
     return x*vmcem/(x*vmcem + (1 - x)*vmbcc)
 
 
-def plot_cavg(files, labels=None, styles=None, ax=None,
-              plotcarbides=False, **kwargs):
+def plot_cavg(files, key='mart.cavg', labels=None, styles=None,
+              ax=None, plotcarbides=False, **kwargs):
     if ax is None:
         fig, ax = plt.subplots()
 
@@ -37,7 +37,7 @@ def plot_cavg(files, labels=None, styles=None, ax=None,
         if styles:
             args.append(next(cysty))
 
-        ax.plot(df.t, x2wp(df['mart.cavg'], x=x, w=w, y=y), *args, **kwargs)
+        ax.plot(df.t, x2wp(df[key], x=x, w=w, y=y), *args, **kwargs)
 
     ax.set_xlim(-.5, 100.5)
 
