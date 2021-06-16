@@ -3,13 +3,11 @@
 # -*- coding: utf-8 -*-
 
 if __name__ == '__main__':
-    import sys
     import os
     import numpy as np
-    import pandas as pd
     from matplotlib import rcParams
     import matplotlib.pyplot as plt
-    from cpartition import FCC, BCC, Interface, WBs, CProfiles, x2wp
+    from cpartition import FCC, BCC, WBs, CProfiles
     import argparse
 
     rcParams.update({'font.family': 'sans-serif',
@@ -113,7 +111,7 @@ if __name__ == '__main__':
                                                  args.sol),
                                              tlist=[t])
                     last_t = t
-        except:
+        except Exception:
             print('Failed to plot "{}"'.format(basename))
             plt.close()
         else:

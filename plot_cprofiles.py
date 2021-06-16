@@ -3,10 +3,7 @@
 # -*- coding: utf-8 -*-
 
 if __name__ == '__main__':
-    import sys
     import os
-    import numpy as np
-    from fnmatch import fnmatch
     from matplotlib import rcParams
     import matplotlib.pyplot as plt
     from cpartition import x2wp, CProfiles
@@ -94,7 +91,7 @@ if __name__ == '__main__':
                                      mirror=args.mirror,
                                      func=lambda x: x2wp(x, y=y))
 
-        except:
+        except Exception:
             print('Failed to plot "{}"'.format(basename))
             plt.close()
         else:
